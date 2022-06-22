@@ -1,0 +1,9 @@
+make=3.77
+openssh-client=0
+docker=0
+fontconfig=0
+ca-certificates=0
+curl=0
+gnupg=0 
+lsb-release=0
+fontconfig=0

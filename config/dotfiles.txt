@@ -1,0 +1,3 @@
+.vim/vimrc=vim/vimrc
+.zshrc=zsh/zshrc
+.zprofile=zsh/zprofile
