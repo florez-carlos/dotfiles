@@ -1,32 +1,5 @@
 -- following options are the default
 -- each of these are documented in `:help nvim-tree.OPTION_NAME`
-vim.g.nvim_tree_icons = {
-  default = "",
-  symlink = "",
-  git = {
-    unstaged = "",
-    staged = "S",
-    unmerged = "",
-    renamed = "➜",
-    deleted = "",
-    untracked = "U",
-    ignored = "◌",
-  },
-  folder = {
-    default = "",
-    open = "",
-    empty = "",
-    empty_open = "",
-    symlink = "",
-  },
-}
-vim.g.nvim_tree_show_icons = {
-    git = 1,
-    folders = 1,
-    files = 1,
-    folder_arrows = 1,
-    tree_width = 30,
-}
 vim.api.nvim_create_autocmd('BufEnter', {
     command = "if winnr('$') == 1 && bufname() == 'NvimTree_' . tabpagenr() | quit | endif",
     nested = true,
@@ -42,7 +15,6 @@ if not config_status_ok then
 end
 
 local tree_cb = nvim_tree_config.nvim_tree_callback
-vim.g.nvim_tree_root_folder_modifier = ':~'
 vim.g.nvim_tree_git_hl = 1,
 nvim_tree.setup {
   actions = {
@@ -109,7 +81,45 @@ nvim_tree.setup {
     number = false,
     relativenumber = false,
   },
-  --quit_on_open = 0,
+  renderer = {
+    root_folder_modifier = ':~',
+    icons = {
+      show = {
+      
+        git = 1,
+        folder = 1,
+        file = 1,
+        folder_arrow = 1,
+        tree_width = 30,
+
+      },
+      
+      glyphs = {
+
+          default = "",
+          symlink = "",
+          git = {
+            unstaged = "",
+            staged = "S",
+            unmerged = "",
+            renamed = "➜",
+            deleted = "",
+            untracked = "U",
+            ignored = "◌",
+          },
+          folder = {
+            default = "",
+            open = "",
+            empty = "",
+            empty_open = "",
+            symlink = "",
+          },
+      }
+
+
+    }
+  },
+    --quit_on_open = 0,
   --git_hl = 1,
   --disable_window_picker = 0,
   --root_folder_modifier = ":t",
