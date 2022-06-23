@@ -4,10 +4,19 @@ Dotfiles contains and updated configuration for the vim editor
 
 ## Installation
 
+### Install WSL2 and Docker Desktop
+
+Follow these instructions to install [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install) and [Docker Desktop](https://docs.docker.com/desktop/windows/install/)
+
+
+### Install required fonts
+
+Download and install each one of the fonts defined in config/fonts.txt
+
 ### Intall basic dependencies
 
 ```bash
-apt-get install git make -y
+apt-get install git make keychain socat -y
 ```
 
 ### Add your ssh/gpg keys
@@ -38,6 +47,21 @@ EOT
 . $HOME/.bashrc
 ```
 
+### Define required keychain command in bash_profile
+```bash
+cat <<EOT >> $HOME/.bash_profile
+eval `keychain --eval --agents ssh id_ed25519`
+if [ -n "$BASH_VERSION" ]; then
+    # include .bashrc if it exists
+    if [ -f "$HOME/.bashrc" ]; then
+        . "$HOME/.bashrc"
+    fi
+fi
+EOT
+. $HOME/.bash_profile
+```
+
+
 ### Clone the repo and recurse submodules
 
 ```bash
@@ -50,12 +74,6 @@ cd dotfiles
 ```bash
 mkdir gpg
 cp $HOME/.gnupg/private.pem gpg/private.pem
-```
-
-### Install required dependencies on the host machine
-
-```bash
-sudo make install -e USER=$USER -e HOME=$HOME
 ```
 
 ### Log out
