@@ -5,10 +5,6 @@ INSTALL_HOST_DEPENDENCIES := $(SCRIPTS_DIR)/install-host-dependencies.sh
 UNINSTALL_HOST_DEPENDENCIES := $(SCRIPTS_DIR)/uninstall-host-dependencies.sh
 
 
-
-uninstall:
-	@$(UNINSTALL_HOST_DEPENDENCIES)
-
 install:
 	@$(INSTALL_HOST_DEPENDENCIES)
 
@@ -24,5 +20,5 @@ run:
 exec:
 	docker exec -it dev-env-cont /usr/bin/zsh
 
-test:
-	@echo $$DOT_HOME_CONFIG
+trash:
+	docker container stop dev-env-cont
