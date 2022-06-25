@@ -34,6 +34,7 @@ export GIT_USER_NAME='Git name, not username but name'
 export GIT_USER_USERNAME='this-one-is-the-git-username'
 export GIT_USER_SIGNINGKEY='gpg public key id'
 export GIT_USER_EMAIL='example@example.com'
+export GIT_PAT=thepersonalauthenticationtoken
 EOT
 . $HOME/.bashrc
 ```

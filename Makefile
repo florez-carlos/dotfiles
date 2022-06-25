@@ -11,7 +11,7 @@ install:
 build:
 	docker build --build-arg USER --build-arg PASSWORD --build-arg GIT_USER_NAME \
 		--build-arg GIT_USER_USERNAME --build-arg GIT_USER_EMAIL \
-		--build-arg GIT_USER_SIGNINGKEY --build-arg SSH_AUTH_SOCK -t dev-env-img .
+		--build-arg GIT_USER_SIGNINGKEY --build-arg GIT_PAT --build-arg SSH_AUTH_SOCK -t dev-env-img .
 
 
 run:

@@ -85,12 +85,11 @@ nvim_tree.setup {
     root_folder_modifier = ':~',
     icons = {
       show = {
-      
-        git = 1,
-        folder = 1,
-        file = 1,
-        folder_arrow = 1,
-        tree_width = 30,
+	git = true,
+        folder = true,
+        file = true,
+        folder_arrow = true,
+        -- tree_width = 30,      
 
       },
       

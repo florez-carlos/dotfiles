@@ -9,6 +9,7 @@ ARG GIT_USER_NAME=user
 ARG GIT_USER_USERNAME=user
 ARG GIT_USER_EMAIL=none@none.com
 ARG GIT_USER_SIGNINGKEY=nothing
+ARG GIT_PAT
 ARG SSH_AUTH_SOCK
 
 ENV USER=$USER
@@ -18,6 +19,7 @@ ENV GIT_USER_NAME=$GIT_USER_NAME
 ENV GIT_USER_USERNAME=$GIT_USER_USERNAME
 ENV GIT_USER_EMAIL=$GIT_USER_EMAIL
 ENV GIT_USER_SIGNINGKEY=$GIT_USER_SIGNINGKEY
+ENV GIT_PAT=$GIT_PAT
 ENV HOME=/home/${USER}
 ENV XDG_DATA_HOME=$HOME/.local/share
 ENV XDG_CONFIG_HOME=$HOME/.config
@@ -33,7 +35,7 @@ ENV SSH_AUTH_SOCK=$SSH_AUTH_SOCK
 
 
 SHELL ["/bin/bash", "-c"]
-RUN mkdir -p {$DOT_HOME_SCRIPTS,$DOT_HOME_CONFIG,$DOT_HOME_ZSH,$DOT_HOME_LIB,$DOT_HOME_VIM,$DOT_HOME/lib/jdtls,$XDG_DATA_HOME/jdtls-data,$XDG_CONFIG_HOME/nvim,$XDG_DATA_HOME/nvim/site,$HOME/.gpg,$XDG_CONFIG_HOME/git}
+RUN mkdir -p {$DOT_HOME_SCRIPTS,$DOT_HOME_CONFIG,$DOT_HOME_ZSH,$DOT_HOME_LIB,$DOT_HOME_VIM,$DOT_HOME_LIB/jdtls,$DOT_HOME_LIB/maven,$XDG_DATA_HOME/jdtls-data,$XDG_CONFIG_HOME/nvim,$XDG_DATA_HOME/nvim/site,$HOME/.gpg,$XDG_CONFIG_HOME/git}
 
 ADD ./scripts $DOT_HOME_SCRIPTS
 ADD ./config $DOT_HOME_CONFIG
@@ -59,13 +61,6 @@ RUN npm i -g pyright typescript typescript-language-server
 RUN chmod 600 -R $HOME/.gpg && chmod 700 $HOME/.gpg
 
 USER ${USER}
-# -- These fonts need to be installed on the host machine --
-#RUN mkdir -p ${HOME}/.local/share/fonts
-#RUN cp /opt/dotfiles/fonts/powerlevel10k-media/'MesloLGS NF Bold Italic.ttf' ${HOME}/.local/share/fonts
-#RUN cp /opt/dotfiles/fonts/powerlevel10k-media/'MesloLGS NF Bold.ttf' ${HOME}/.local/share/fonts
-#RUN cp /opt/dotfiles/fonts/powerlevel10k-media/'MesloLGS NF Italic.ttf' ${HOME}/.local/share/fonts
-#RUN cp /opt/dotfiles/fonts/powerlevel10k-media/'MesloLGS NF Regular.ttf' ${HOME}/.local/share/fonts
-#RUN fc-cache -f -v
 
 RUN ln -s $DOT_HOME_ZSH/zshrc $HOME/.zshrc \
 && ln -s $DOT_HOME_ZSH/zlogin $HOME/.zlogin \
@@ -81,12 +76,13 @@ RUN ln -s $DOT_HOME_LIB/powerlevel10k  ${HOME}/.oh-my-zsh/custom/themes/powerlev
 && ln -s $DOT_HOME_ZSH/p10k.zsh $HOME/.p10k.zsh
 
 RUN curl -L -o /tmp/jdtls.tar.gz https://download.eclipse.org/jdtls/milestones/1.9.0/jdt-language-server-1.9.0-202203031534.tar.gz
+RUN curl -L -o /tmp/maven.tar.gz https://dlcdn.apache.org/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz
 
 RUN tar -xvzf /tmp/jdtls.tar.gz -C $DOT_HOME_LIB/jdtls
-
-#RUN pip install pynvim
+RUN tar -xvzf /tmp/maven.tar.gz -C $DOT_HOME_LIB/maven
 
 RUN gpg --batch --passphrase $(echo $PASSWORD) --import $HOME/.gpg/private.pem
 RUN cd $DOT_HOME_SCRIPTS && ./git-config.sh 
+RUN cd $DOT_HOME_SCRIPTS && ./mvn-settings.sh
 WORKDIR /home/${USER}
 ENTRYPOINT ["tail", "-f", "/dev/null"]

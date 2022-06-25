@@ -1,7 +1,6 @@
 .netrwhist
 bundle
 .uuid
-docker-parsed*
 /ssh
 /gpg
 *.diff
