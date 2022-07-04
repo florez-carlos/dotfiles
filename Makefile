@@ -23,7 +23,6 @@ build:
 		--build-arg GIT_USER_EMAIL \
 		--build-arg GIT_USER_SIGNINGKEY \
 		--build-arg GIT_PAT \
-		--build-arg GPG_TTY=$(GPG_TTY) \
 		-t dev-env-img .
 
 

@@ -16,7 +16,6 @@ ARG GROUP=user
 ARG UID=1000
 ARG GID=1000
 ARG DEBIAN_FRONTEND=noninteractive
-ARG GPG_TTY
 
 #All env variables available to the container
 ENV USER=$USER
@@ -42,7 +41,6 @@ ENV DOT_HOME_LIB=$DOT_HOME/lib
 ENV DOT_HOME_VIM=$DOT_HOME/vim
 ENV M2_HOME=$HOME/.m2
 ENV WORKSPACE=$HOME/workspace
-ENV GPG_TTY=$GPG_TTY
 
 SHELL ["/bin/bash", "-c"]
 
