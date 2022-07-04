@@ -98,15 +98,35 @@ cd dotfiles
 
 ## Install required dependencies on the host machine
 
+### Ubuntu
+
+If using WSL2, skip to [WSL2 - Ubuntu distro](#wsl2---ubuntu-distro)
+
+#### Run the install target
+
+This will install Docker and MesloLGS fonts on the host machine
+
 ```bash
 sudo make install -e USER=$USER -e HOME=$HOME
 ```
 
-## Log out
+---
+
+#### Log out
 
 Log out and log back in for group changes to take effect
 
-## Configure fonts in terminal settings
+---
+
+### WSL2 - Ubuntu distro
+
+Follow these instructions to install 
+[WSL2](https://docs.microsoft.com/en-us/windows/wsl/install)
+and [Docker Desktop](https://docs.docker.com/desktop/windows/install/)
+
+---
+
+## Set font to MesloLGS in your terminal
 
 Choose the MesloLGS NF font in your terminal preferences
 You might have to restart your terminal for changes to take effect
