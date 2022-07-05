@@ -89,6 +89,26 @@ EOT
 . $HOME/.bashrc
 ```
 
+## Define required keychain command in bash_profile
+
+NOTE: Only do this if on WSL2 - Ubuntu distro. <br>
+Skip to the [next section](#clone-the-repo-with-recurse-submodules) if on Ubuntu
+
+### WSL2 - Ubuntu distro
+
+```bash
+cat <<EOT >> $HOME/.bash_profile
+eval `keychain --eval --agents ssh id_ed25519`
+if [ -n "$BASH_VERSION" ]; then
+    # include .bashrc if it exists
+    if [ -f "$HOME/.bashrc" ]; then
+        . "$HOME/.bashrc"
+    fi
+fi
+EOT
+. $HOME/.bash_profile
+```
+
 ## Clone the repo with recurse submodules
 
 ```bash
