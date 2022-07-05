@@ -10,9 +10,11 @@ Creates a containerized development environment with the following:
 ## Table of Contents
 
 * [Installation](#installation)
-* [Export Required Env Variables](#export-required-env-variables)
-* [Install Required Dependencies on Host Machine](#install-required-dependencies-on-host-machine)
-* [Install Docker](#install-docker)
+  * [Install basic dependencies](#install-basic-dependencies)
+    * [Ubuntu](#ubuntu)
+    * [WSL2 - Ubuntu distro](#wsl2---ubuntu-distro)
+  * [Generate new GPG/SSH keys or import existing keys and add them to agents](#generate-new-gpgssh-keys-or-import-existing-keys-and-add-them-to-agents)
+  * [Export required env variables to bashrc](#export-required-env-variables-to-bashrc)
   * [Ubuntu](#ubuntu)
   * [WSL2 - Ubuntu distro](#wsl2---ubuntu-distro)
 * [Login to the Github Container Registry](login-to-the-github-container-registkry)
@@ -22,7 +24,7 @@ Creates a containerized development environment with the following:
 
 ## Installation
 
-## Intall basic dependencies
+## Install basic dependencies
 
 These are required to clone the repo and invoke the Makefile targets. <br>
 NOTE: WSL2 - Ubuntu distro requires some additional dependencies for SSH
@@ -84,9 +86,9 @@ chmod 600 $HOME/.gnupg/public.pem
 gpg --import $HOME/.gnupg/private.pem
 ```
 
-## Export required env variables to bashrc, make sure text with spaces is wrapped in quotes
+## Export required env variables to bashrc
 
-Make sure to replace the variables in brackets with the relevant credentials
+- NOTE: Make sure to replace the variables in brackets with the relevant credentials
 
 
 NOTE: if the value contains empty space, wrap the entire value in single quotes 'like this'
