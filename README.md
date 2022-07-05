@@ -38,7 +38,9 @@ These will be available on the host machine and will be forwarded to the contain
 For reference on generating an [SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
 For reference on generating a [GPG key](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key)
 
-Continue with the next section if you have generated new keys and added them to the agents per the instructions above.
+Continue to the 
+[next section](#export-required-env-variables-to-bashrc,-make-sure-text-with-spaces-is-wrapped-in-quotes) 
+if you have generated new keys and added them to the agents per the instructions above.
 
 If you already have existing SSH/GPG keys, however, then:
 
@@ -87,6 +89,17 @@ export GIT_USER_EMAIL={example@example.com}
 export GIT_PAT={The Personal Access Token}
 EOT
 . $HOME/.bashrc
+```
+
+## Set pinentry-mode in gpg conf file
+
+This fixes an issue where gpg does not prompt for the passphrase
+when attempting to sign a commit in the container.
+
+```bash
+cat <<EOT >> $HOME/.gnupg/gpg.conf
+pinentry-mode loopback
+EOT
 ```
 
 ## Define required keychain command in bash_profile
