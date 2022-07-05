@@ -15,11 +15,16 @@ Creates a containerized development environment with the following:
     * [WSL2 - Ubuntu distro](#wsl2---ubuntu-distro)
   * [Generate new GPG/SSH keys or import existing keys and add them to agents](#generate-new-gpgssh-keys-or-import-existing-keys-and-add-them-to-agents)
   * [Export required env variables to bashrc](#export-required-env-variables-to-bashrc)
-  * [Ubuntu](#ubuntu)
-  * [WSL2 - Ubuntu distro](#wsl2---ubuntu-distro)
-* [Login to the Github Container Registry](login-to-the-github-container-registkry)
-* [Build the Image](#build-the-image)
-* [Push the Image to the Registry](#push-the-image-to-the-registry)
+  * [Set pinentry-mode in gpg conf file](#set-pinentry-mode-in-gpg-conf-file)
+  * [Define required keychain command in bash_profile](#define-required-keychain-command-in-bash_profile)
+    * [WSL2 - Ubuntu distro](#wsl2---ubuntu-distro-1)
+  * [Clone the repo with recurse submodules](#clone-the-repo-with-recurse-submodules)
+  * [Install required dependencies on the host machine](#install-required-dependencies-on-the-host-machine)
+    * [Ubuntu](#ubuntu-1)
+    * [WSL2 - Ubuntu distro](#wsl2---ubuntu-distro-2)
+  * [Set font to MesloLGS in your terminal](#set-font-to-meslolgs-in-your-terminal)
+  * [Build the Image](#build-the-image)
+  * [Run the Container](#run-the-container)
 
 
 ## Installation
@@ -89,9 +94,8 @@ gpg --import $HOME/.gnupg/private.pem
 ## Export required env variables to bashrc
 
 - NOTE: Make sure to replace the variables in brackets with the relevant credentials
+- NOTE: if the value contains empty space, wrap the entire value in single quotes 'like this'
 
-
-NOTE: if the value contains empty space, wrap the entire value in single quotes 'like this'
 ```bash
 cat <<EOT >> $HOME/.bashrc
 export PASSWORD={Desired password for the user in container}
@@ -117,7 +121,8 @@ EOT
 
 ## Define required keychain command in bash_profile
 
-NOTE: Only do this if on WSL2 - Ubuntu distro. <br>
+- NOTE: Only do this if on WSL2 - Ubuntu distro. <br>
+
 Skip to the [next section](#clone-the-repo-with-recurse-submodules) if on Ubuntu
 
 ### WSL2 - Ubuntu distro
@@ -146,7 +151,7 @@ cd dotfiles
 
 ### Ubuntu
 
-#### Run the install target
+- Run the install target
 
 This will install Docker and MesloLGS fonts on the host machine
 
@@ -154,7 +159,7 @@ This will install Docker and MesloLGS fonts on the host machine
 sudo make install -e USER=$USER -e HOME=$HOME
 ```
 
-#### Log out
+- Log out
 
 Log out and log back in for group changes to take effect
 
@@ -172,13 +177,13 @@ and [Docker Desktop](https://docs.docker.com/desktop/windows/install/)
 Choose the MesloLGS NF font in your terminal preferences
 You might have to restart your terminal for changes to take effect
 
-## Build the image
+## Build the Image
 
 ```bash
 make build
 ```
 
-## Run the container
+## Run the Container
 
 ```bash
 make run && make exec
