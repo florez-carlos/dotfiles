@@ -29,7 +29,6 @@ apt-get install git make -y
 apt-get install git make keychain socat -y
 ```
 
----
 
 ## Generate new GPG/SSH keys or import existing keys and add them to agents
 
