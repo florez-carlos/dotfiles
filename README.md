@@ -9,6 +9,18 @@ Creates a containerized development environment with the following:
 
 ## Table of Contents
 
+* [Installation](#installation)
+* [Export Required Env Variables](#export-required-env-variables)
+* [Install Required Dependencies on Host Machine](#install-required-dependencies-on-host-machine)
+* [Install Docker](#install-docker)
+  * [Ubuntu](#ubuntu)
+  * [WSL2 - Ubuntu distro](#wsl2---ubuntu-distro)
+* [Login to the Github Container Registry](login-to-the-github-container-registkry)
+* [Build the Image](#build-the-image)
+* [Push the Image to the Registry](#push-the-image-to-the-registry)
+
+
+## Installation
 
 ## Intall basic dependencies
 
