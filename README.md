@@ -1,5 +1,5 @@
 # Dotfiles
-a
+
 Creates a containerized development environment with the following:
 
 - zsh/oh-my-zsh
@@ -12,8 +12,8 @@ Creates a containerized development environment with the following:
 
 ## Intall basic dependencies
 
-These are required to clone the repo and invoke the Makefile targets,
-WSL2 - Ubuntu distro requires some additional dependencies for SSH
+These are required to clone the repo and invoke the Makefile targets. <br>
+NOTE: WSL2 - Ubuntu distro requires some additional dependencies for SSH
 
 ### Ubuntu
 
@@ -28,6 +28,8 @@ apt-get install git make -y
 ```bash
 apt-get install git make keychain socat -y
 ```
+
+---
 
 ## Generate new GPG/SSH keys or import existing keys and add them to agents
 
@@ -69,8 +71,6 @@ chmod 600 $HOME/.gnupg/public.pem
 gpg --import $HOME/.gnupg/private.pem
 ```
 
----
-
 ## Export required env variables to bashrc, make sure text with spaces is wrapped in quotes
 
 Make sure to replace the variables in brackets with the relevant credentials
@@ -89,7 +89,7 @@ EOT
 . $HOME/.bashrc
 ```
 
-## Clone the repo and recurse submodules
+## Clone the repo with recurse submodules
 
 ```bash
 git clone --recurse-submodules -j8 
@@ -100,8 +100,6 @@ cd dotfiles
 
 ### Ubuntu
 
-If using WSL2, skip to [WSL2 - Ubuntu distro](#wsl2---ubuntu-distro)
-
 #### Run the install target
 
 This will install Docker and MesloLGS fonts on the host machine
@@ -109,8 +107,6 @@ This will install Docker and MesloLGS fonts on the host machine
 ```bash
 sudo make install -e USER=$USER -e HOME=$HOME
 ```
-
----
 
 #### Log out
 
@@ -124,7 +120,6 @@ Follow these instructions to install
 [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install)
 and [Docker Desktop](https://docs.docker.com/desktop/windows/install/)
 
----
 
 ## Set font to MesloLGS in your terminal
 
@@ -140,7 +135,7 @@ make build
 ## Run the container
 
 ```bash
-make run
+make run && make exec
 ```
 
 
