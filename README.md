@@ -140,10 +140,16 @@ EOT
 . $HOME/.bash_profile
 ```
 
-## Clone the repo with recurse submodules
+## Create the workspace dir and clone the repo with recurse submodules
+
+The workspace directory is a volume in the container, it's important <br>
+to clone all the repos and do all the important work in this directory <br>
+since it will be preserved between container shutdowns.
 
 ```bash
-git clone --recurse-submodules -j8 
+mkdir $HOME/workspace
+cd workspace
+git clone --recurse-submodules -j8 <repo url>
 cd dotfiles
 ```
 
@@ -177,13 +183,23 @@ and [Docker Desktop](https://docs.docker.com/desktop/windows/install/)
 Choose the MesloLGS NF font in your terminal preferences
 You might have to restart your terminal for changes to take effect
 
-## Build the Image
+
+
+## Login to the Github container registry to gain access to the base image
+
+This is required to build the image
+
+```bash
+echo $GIT_PAT | docker login ghcr.io -u <username> --password-stdin
+```
+
+## Build the image
 
 ```bash
 make build
 ```
 
-## Run the Container
+## Run the container
 
 ```bash
 make run && make exec
