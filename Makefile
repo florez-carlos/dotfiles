@@ -7,6 +7,7 @@ export UID := $(shell id -u)
 export GID := $(shell id -g)
 export GROUP := $(shell id -gn)
 export GPG_TTY := $(shell tty)
+export IMAGE_VERSION := 1.0.0
 
 install:
 	@$(INSTALL_HOST_DEPENDENCIES)
@@ -23,8 +24,7 @@ build:
 		--build-arg GIT_USER_EMAIL \
 		--build-arg GIT_USER_SIGNINGKEY \
 		--build-arg GIT_PAT \
-		-t dev-env-img .
-
+		-t ghcr.io/$(GIT_USER_USERNAME)/dev-env-img:$$IMAGE_VERSION .
 
 run:
 	docker run -it --rm -d \
@@ -33,7 +33,7 @@ run:
 		-v $$HOME/workspace:$$HOME/workspace \
 		-v $$HOME/.gnupg:$$HOME/.gnupg \
 		-e SSH_AUTH_SOCK=$$SSH_AUTH_SOCK \
-		dev-env-img
+		ghcr.io/$(GIT_USER_USERNAME)/dev-env-img:$$IMAGE_VERSION
 
 exec:
 	docker exec -it dev-env-cont /usr/bin/zsh
