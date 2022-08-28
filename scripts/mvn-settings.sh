@@ -16,7 +16,7 @@ cat << EOF > $M2_HOME/settings.xml
         </repository>
         <repository>
           <id>github</id>
-          <url>https://maven.pkg.github.com/$GIT_USER_USERNAME/mappable</url>
+          <url>https://maven.pkg.github.com/$GIT_USER_USERNAME/global</url>
           <snapshots>
             <enabled>true</enabled>
           </snapshots>

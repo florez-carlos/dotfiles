@@ -21,3 +21,4 @@ flake8=0
 man-db=0
 gpg=2.2.0
 expect=0
+unzip=0
