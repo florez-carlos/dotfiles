@@ -7,24 +7,29 @@ export UID := $(shell id -u)
 export GID := $(shell id -g)
 export GROUP := $(shell id -gn)
 export GPG_TTY := $(shell tty)
-export IMAGE_VERSION := 1.0.0
+export IMAGE_VERSION := 1.1.0
+PASSWORD ?= $(shell bash -c 'read -r -s -p "Linux Password to be used in the dev env: " pwd; echo $$pwd')
+
+.PHONY: install build run exec trash start reload
 
 install:
 	@$(INSTALL_HOST_DEPENDENCIES)
 
+# BUILDKIT instruction is required to use the secret flag
 build:
-	docker build \
+	@echo $(PASSWORD) > $$HOME/delete-me.txt
+	DOCKER_BUILDKIT=1 docker build \
 		--build-arg USER=$$USER \
 		--build-arg GROUP=$(GROUP) \
 		--build-arg UID=$(UID) \
 		--build-arg GID=$(GID) \
-		--build-arg PASSWORD \
 		--build-arg GIT_USER_NAME \
 		--build-arg GIT_USER_USERNAME \
 		--build-arg GIT_USER_EMAIL \
 		--build-arg GIT_USER_SIGNINGKEY \
-		--build-arg GIT_PAT \
-		-t ghcr.io/$(GIT_USER_USERNAME)/dev-env-img:$$IMAGE_VERSION .
+		--secret id=PASSWORD,src=$$HOME/delete-me.txt \
+		-t do-not-push/$(GIT_USER_USERNAME)/dev-env-img:v$$IMAGE_VERSION .
+	@rm $$HOME/delete-me.txt
 
 run:
 	docker run -it --rm -d \
@@ -33,10 +38,14 @@ run:
 		-v $$HOME/workspace:$$HOME/workspace \
 		-v $$HOME/.gnupg:$$HOME/.gnupg \
 		-e SSH_AUTH_SOCK=$$SSH_AUTH_SOCK \
-		ghcr.io/$(GIT_USER_USERNAME)/dev-env-img:$$IMAGE_VERSION
+		do-not-push/$(GIT_USER_USERNAME)/dev-env-img:v$$IMAGE_VERSION
 
 exec:
 	docker exec -it dev-env-cont /usr/bin/zsh
 
 trash:
 	docker container stop dev-env-cont
+
+start: run exec
+
+reload: trash run exec

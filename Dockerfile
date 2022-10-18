@@ -1,14 +1,12 @@
-FROM ghcr.io/florez-carlos/dev-env-ubuntu-base-img:1.0.1
+FROM ghcr.io/florez-carlos/dev-env-ubuntu-base-img:v1.3.0
 LABEL org.opencontainers.image.authors="carlos@florez.co.uk"
 
-#Configurable args (export custom values in your bashrc)
-ARG PASSWORD=password
-ARG LOCALTIME=Eastern
+#Configurable args, define these with your own, these are build time args
+ARG LOCALTIME=Pacific
 ARG GIT_USER_NAME=user
 ARG GIT_USER_USERNAME=user
 ARG GIT_USER_EMAIL=none@none.com
 ARG GIT_USER_SIGNINGKEY=gpg_key_id
-ARG GIT_PAT=personal_access_token
 
 #Static args (some of these are redefined by the Makefile)
 ARG USER=user
@@ -22,13 +20,11 @@ ENV USER=$USER
 ENV GROUP=$GROUP
 ENV UID=$UID
 ENV GID=$GID
-ENV PASSWORD=$PASSWORD
 ENV LOCALTIME=$LOCALTIME
 ENV GIT_USER_NAME=$GIT_USER_NAME
 ENV GIT_USER_USERNAME=$GIT_USER_USERNAME
 ENV GIT_USER_EMAIL=$GIT_USER_EMAIL
 ENV GIT_USER_SIGNINGKEY=$GIT_USER_SIGNINGKEY
-ENV GIT_PAT=$GIT_PAT
 ENV HOME=/home/${USER}
 ENV XDG_DATA_HOME=$HOME/.local/share
 ENV XDG_CONFIG_HOME=$HOME/.config
@@ -46,7 +42,11 @@ SHELL ["/bin/bash", "-c"]
 
 #Create User
 RUN groupadd -g ${GID} -r ${GROUP}
-RUN useradd -rm -s /bin/bash -g ${GROUP} -G sudo -u ${UID} ${USER} -p "$(openssl passwd -1 $PASSWORD)"
+
+#Read password secret from a file
+RUN --mount=type=secret,id=PASSWORD \
+    password="$(cat /run/secrets/PASSWORD)" \
+ && useradd -rm -s /bin/bash -g ${GROUP} -G sudo -u ${UID} ${USER} -p "$(openssl passwd -1 ${password})"
 
 #Set Timezone to user provided/default
 RUN rm /etc/localtime && ln -s /usr/share/zoneinfo/US/$LOCALTIME /etc/localtime
@@ -86,9 +86,8 @@ RUN ln -s $DOT_HOME_LIB/powerlevel10k ${HOME}/.oh-my-zsh/custom/themes/powerleve
 RUN tar -xvzf /tmp/jdtls.tar.gz -C $DOT_HOME_LIB/jdtls
 RUN tar -xvzf /tmp/maven.tar.gz -C $DOT_HOME_LIB/maven
 
-#Creates Git configuration and MVN Settings files
+#Creates Git configuration
 RUN cd $DOT_HOME_SCRIPTS && ./git-config.sh 
-RUN cd $DOT_HOME_SCRIPTS && ./mvn-settings.sh
 
 WORKDIR ${WORKSPACE}
 ENTRYPOINT ["tail", "-f", "/dev/null"]
