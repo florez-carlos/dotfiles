@@ -24,7 +24,7 @@ Creates a containerized development environment with the following:
     * [WSL2 - Ubuntu distro](#wsl2---ubuntu-distro-2)
   * [Set font to MesloLGS in your terminal](#set-font-to-meslolgs-in-your-terminal)
   * [Build the Image](#build-the-image)
-  * [Run the Container](#run-the-container)
+  * [Running the dev env](#running-the-dev-env)
 
 
 ## Installation
@@ -98,12 +98,10 @@ gpg --import $HOME/.gnupg/private.pem
 
 ```bash
 cat <<EOT >> $HOME/.bashrc
-export PASSWORD={Desired password for the user in container}
 export GIT_USER_NAME={Git name, not the username but name}
 export GIT_USER_USERNAME={Git username, not the name but the username}
 export GIT_USER_SIGNINGKEY={gpg public key id}
 export GIT_USER_EMAIL={example@example.com}
-export GIT_PAT={The Personal Access Token}
 EOT
 . $HOME/.bashrc
 ```
@@ -123,7 +121,7 @@ EOT
 
 - NOTE: Only do this if on WSL2 - Ubuntu distro. <br>
 
-Skip to the [next section](#clone-the-repo-with-recurse-submodules) if on Ubuntu
+Skip to the [next section](#create-the-workspace-dir-and-clone-the-repo-with-recurse-submodules) if on Ubuntu
 
 ### WSL2 - Ubuntu distro
 
@@ -149,7 +147,7 @@ since it will be preserved between container shutdowns.
 ```bash
 mkdir $HOME/workspace
 cd workspace
-git clone --recurse-submodules -j8 <repo url>
+git clone --recurse-submodules -j8 git@github.com:florez-carlos/dotfiles.git
 cd dotfiles
 ```
 
@@ -190,7 +188,7 @@ You might have to restart your terminal for changes to take effect
 This is required to build the image
 
 ```bash
-echo $GIT_PAT | docker login ghcr.io -u <username> --password-stdin
+echo <Git Personal Access Token w/ at least read permissions> | docker login ghcr.io -u $GIT_USER_USERNAME --password-stdin
 ```
 
 ## Build the image
@@ -199,10 +197,24 @@ echo $GIT_PAT | docker login ghcr.io -u <username> --password-stdin
 make build
 ```
 
-## Run the container
+## Running the dev env
 
+The dev env is a runnig docker container that is being exec into
+
+To run the dev env:
 ```bash
-make run && make exec
+make start
+```
+
+To trash the dev env and start a new one:
+WARNING: remember only contents inside the ~/workspace dir will be persisted across shutdowns
+```bash
+make reload
+```
+
+To only trash the dev env and not start a new one:
+```bash
+make trash
 ```
 
 
