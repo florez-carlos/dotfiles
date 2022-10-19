@@ -18,7 +18,7 @@ Creates a containerized development environment with the following:
   * [Set pinentry-mode in gpg conf file](#set-pinentry-mode-in-gpg-conf-file)
   * [Define required keychain command in bash_profile](#define-required-keychain-command-in-bash_profile)
     * [WSL2 - Ubuntu distro](#wsl2---ubuntu-distro-1)
-  * [Clone the repo with recurse submodules](#clone-the-repo-with-recurse-submodules)
+  * [Create the workspace dir and clone the repo with recurse submodules](#create-the-workspace-dir-and-clone-the-repo-with-recurse-submodules)
   * [Install required dependencies on the host machine](#install-required-dependencies-on-the-host-machine)
     * [Ubuntu](#ubuntu-1)
     * [WSL2 - Ubuntu distro](#wsl2---ubuntu-distro-2)
@@ -206,7 +206,7 @@ To run the dev env:
 make start
 ```
 
-To trash the dev env and start a new one:
+To trash the dev env and start a new one:<br />
 WARNING: remember only contents inside the ~/workspace dir will be persisted across shutdowns
 ```bash
 make reload
