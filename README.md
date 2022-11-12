@@ -218,5 +218,7 @@ make trash
 ```
 
 
+TODO: gpg --batch --yes delete-keys <- this might be needed to delete a GPG key in the host due to pinentry loopback
+TODO: kubctl and minikube host dependencies kubectx too and jq, az
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
