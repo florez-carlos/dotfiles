@@ -316,7 +316,7 @@ This is required in WSL2 to automatically start the agent and add the ssh key to
 > #### WSL2
 
 ```bash
-cat <<EOT > $HOME/.bash_profile
+cat <<"EOT" > $HOME/.bash_profile
 eval `keychain --eval --agents ssh id_ed25519`
 if [ -n "$BASH_VERSION" ]; then
     # include .bashrc if it exists
