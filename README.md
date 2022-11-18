@@ -94,7 +94,7 @@ Run the install target. <br>
 ```bash
 sudo make install -e USER=$USER -e HOME=$HOME
 ```
-> :exclamation: **IMPORTANT: Log out and log back in for group changes to take effect before proceeding.**
+:exclamation: **Log out and log back in for group changes to take effect before proceeding.**
 
 > #### WSL2
 
@@ -145,7 +145,7 @@ cp $HOME/.ssh/id_ed25519.pub <path/to/external/device>
 
 Export your existing keys to Azure vault. <br>
 
-> :exclamation: az cli is required to run the following commands.
+:exclamation: **az cli is required to run the following commands**.
 
 ```bash
 az keyvault secret set --vault-name <vault name> --name <private key secret name> --file $HOME/.ssh/id_ed25519
@@ -212,7 +212,7 @@ If you have generated a new GPG key following the instructions above, skip to [E
 If your keys are already exported to an external device or the cloud, skip to [Import to the new device](#import-to-the-new-device-2) <br>
 
 Export your existing keys. <br>
-> :exclamation: replace brackets with the email associated with your key.
+:exclamation: **replace brackets with the email associated with your key.**
 
 ```bash
 gpg --output $HOME/public.pgp --armor --export <email@example.com>
@@ -233,7 +233,7 @@ cp $HOME/private.pgp <path/to/external/device>
 -OR- <br>
 
 Export your existing keys to Azure Vault. <br>
-> :exclamation: az cli is required to run the following commands.
+:exclamation: **az cli is required to run the following commands.**
 
 ```bash
 az keyvault secret set --vault-name <vault name> --name <public key secret name> --file $HOME/public.pgp
@@ -278,7 +278,7 @@ gpg --import $HOME/.gnupg/private.pem
 
 These are necessary to build your git config file, some are required at container build time and others are <br>
 required at container runtime, therefore it's recommended to keep these env variables in your .bashrc <br>
-> :exclamation: Make sure to replace the variables in brackets with the relevant credentials
+:exclamation: **Make sure to replace the variables in brackets with the relevant credentials.** <br>
 > :warning: **if the value contains empty space, wrap the entire value in single quotes 'like this'**
 
 ```bash
@@ -311,7 +311,7 @@ EOT
 
 Skip to the [Create the workspace dir and clone the repo with recurse submodules](#create-the-workspace-dir-and-clone-the-repo-with-recurse-submodules) if not on WSL2.
 This is required in WSL2 to automatically start the agent and add the ssh key to it.
-> :exclamation: **Only do this if using WSL2.** <br>
+:exclamation: **Only do this if using WSL2.** <br>
 
 > #### WSL2
 
