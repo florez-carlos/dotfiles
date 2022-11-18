@@ -89,7 +89,7 @@ These dependencies are directly installed to the host machine
 > #### Ubuntu
 
 Run the install target. <br>
-> :information_source: This will install Docker and MesloLGS fonts on the host machine
+:information_source: This will install Docker and MesloLGS fonts on the host machine
 
 ```bash
 sudo make install -e USER=$USER -e HOME=$HOME
@@ -113,7 +113,7 @@ Download the following fonts, click on each font once downloaded and click insta
  * [Regular](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Regular.ttf)
 
 Once the fonts have been installed, open the Windows terminal settings and change the face font to 'MesloLGS NF' for the ubuntu profile. <br>
-> :warning: **You might have to restart your terminal for changes to take effect.**
+> :warning: **Restart your terminal for changes to take effect.**
 
 ---
 
@@ -188,7 +188,7 @@ ssh-add -l
 ```
 
 Running the above command should have a similar output to this: <br>
-> <em>256 SHA256:AaaaaaaaaaAAAAAAAAAAABBBBBbbbb example@email.com (ED25519)</em> <br>
+> <em>256 SHA256:AaaaaaaaaaAAAAAAAAAAABBBBBbbbb example@email.com (ED25519)</em>
 If so, then the ssh agent is available and the key has been correctly added.
 
 --- 
@@ -309,8 +309,8 @@ EOT
 ### Define required keychain command in bash_profile
 > <em>(WSL2 ONLY)</em>
 
-Skip to the [Create the workspace dir and clone the repo with recurse submodules](#create-the-workspace-dir-and-clone-the-repo-with-recurse-submodules) if not on WSL2.
-This is required in WSL2 to automatically start the agent and add the ssh key to it.
+Skip to the [Create the workspace dir and clone the repo with recurse submodules](#create-the-workspace-dir-and-clone-the-repo-with-recurse-submodules) if not on WSL2. <br>
+This is required in WSL2 to automatically start the agent and add the ssh key to it. <br>
 :exclamation: **Only do this if using WSL2.** <br>
 
 > #### WSL2
