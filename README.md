@@ -29,7 +29,16 @@ Creates a containerized development environment with the following:
 
 ## Installation
 
-### Install basic host dependencies
+The following platforms are supported: <br>
+
+ - Ubuntu
+ - WSL2 (Ubuntu distro) from here on referred only as 'WSL2'
+
+- NOTE: Each step has a different set of instructions for each supported platform, <br>
+some steps are global and will be marked with: <em>(Ubuntu & WSL2)</em>, which means <br>
+the steps are to be followed by Ubuntu AND WSL2 installations.
+
+### Install basic dependencies
 
 These dependencies are required to clone the repo and invoke the Makefile targets. <br>
 
@@ -39,16 +48,13 @@ These dependencies are required to clone the repo and invoke the Makefile target
 sudo apt-get update -y && sudo apt-get upgrade -y
 sudo apt-get install git make -y
 ```
----
 
-#### WSL2 - Ubuntu distro
+#### WSL2
 
 First, follow these instructions to install the following Windows dependencies:
+
  * [Windows Terminal](https://github.com/microsoft/terminal#via-github)
  * [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install)
- * [Docker Desktop](https://docs.docker.com/desktop/windows/install/)
-
-Ensure all 3 are installed and that Docker Desktop is running. <br>
 
 Open the Ubuntu distribution in Windows Terminal and run the following commands:
 ```bash
@@ -56,16 +62,73 @@ sudo apt-get update -y && sudo apt-get upgrade -y
 sudo apt-get install git make keychain socat -y
 ```
 
+---
+
+### Create the workspace dir and clone the repo with recurse submodules
+<em>(Ubuntu & WSL2)</em>
+
+The workspace directory is a volume in the container, it's important <br>
+to clone all the repos and do all the important work in this directory <br>
+since it will be preserved between container shutdowns.
+
+```bash
+mkdir -p $HOME/workspace 
+cd $HOME/workspace
+```
+
+```bash
+git clone --recurse-submodules -j8 git@github.com:florez-carlos/dotfiles.git
+cd dotfiles
+```
+---
+
+### Install required dependencies on the host machine
+
+These dependencies are directly installed to the host machine
+
+#### Ubuntu
+
+Run the install target. <br>
+NOTE: This will install Docker and MesloLGS fonts on the host machine
+
+```bash
+sudo make install -e USER=$USER -e HOME=$HOME
+```
+
+- IMPORTANT: Log out and log back in for group changes to take effect
+
+### WSL2
+
+Follow these instructions to install Docker Desktop:
+
+ * [Docker Desktop](https://docs.docker.com/desktop/windows/install/)
+
+Ensure Docker desktop is properly installed before proceeding. <br>
+
+Manually install MesloLGS fonts in Windows. <br>
+Download the following fonts, click on each font once downloaded and click install when prompted:
+
+ * [Bold Italic](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Bold%20Italic.ttf)
+ * [Bold](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Bold.ttf)
+ * [Italic](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Italic.ttf)
+ * [Regular](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Regular.ttf)
+
+Once the fonts have been installed, open the Windows terminal settings and change the face font to 'MesloLGS NF' for the ubuntu profile. <br>
+ - NOTE: You might have to restart your terminal for changes to take effect.
+
+---
 
 ### Generate a new SSH key
-<em>(Ubuntu & WSL2 - Ubuntu distro)</em>
+<em>(Ubuntu & WSL2)</em>
 
 If you already have an existing SSH key, skip to [Import an existing SSH key](#import-an-existing-ssh-key) <br>
 
 For reference on generating an [SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent) <br>
 
+---
+
 ### Import an existing SSH key
-<em>(Ubuntu & WSL2 - Ubuntu distro)</em>
+<em>(Ubuntu & WSL2)</em>
 
 If you have generated a new SSH key following the instruction above, skip to [Generate a new GPG key](#generate-a-new-gpg-key)
 
@@ -79,11 +142,11 @@ Export your existing keys to an external device
 cp $HOME/.ssh/id_ed25519 <path/to/external/device>
 cp $HOME/.ssh/id_ed25519.pub <path/to/external/device>
 ```
-- OR - <br>
+-OR- <br>
 
 Export your existing keys to Azure vault. <br>
 
-NOTE: az cli is required to run the following commands.
+- NOTE: az cli is required to run the following commands.
 
 ```bash
 az keyvault secret set --vault-name <vault name> --name <private key secret name> --file $HOME/.ssh/id_ed25519
@@ -131,15 +194,19 @@ Running the above command should have a similar output to this
 ```
 If so, then the ssh agent is available and the key has been correctly added.
 
+--- 
+
 ### Generate a new GPG key
-<em>(Ubuntu & WSL2 - Ubuntu distro)</em>
+<em>(Ubuntu & WSL2)</em>
 
 If you already have an existing GPG key, skip to [Import an existing GPG key](#import-an-existing-gpg-key)
 
 For reference on generating a [GPG key](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key)
 
+--- 
+
 ### Import an existing GPG key
-<em>(Ubuntu & WSL2 - Ubuntu distro)</em>
+<em>(Ubuntu & WSL2)</em>
 
 If you have generated a new GPG key following the instructions above, skip to [Export required env variables to bashrc](#export-required-env-variables-to-bashrc)
 
@@ -148,7 +215,8 @@ If you have generated a new GPG key following the instructions above, skip to [E
 If your keys are already exported to an external device or the cloud, skip to [Import to the new device](#import-to-the-new-device-2) <br>
 
 Export your existing keys. <br>
-NOTE: replace brackets with the email associated with your key.
+ - NOTE: replace brackets with the email associated with your key.
+
 ```bash
 gpg --output $HOME/public.pgp --armor --export <email@example.com>
 ```
@@ -162,14 +230,13 @@ Copy your existing keys to an external device
 ```bash
 cp $HOME/public.pgp <path/to/external/device>
 ```
-
 ```bash
 cp $HOME/private.pgp <path/to/external/device>
 ```
-- OR - <br>
+-OR- <br>
 
 Export your existing keys to Azure Vault. <br>
-NOTE: az cli is required to run the following commands.
+ - NOTE: az cli is required to run the following commands.
 
 ```bash
 az keyvault secret set --vault-name <vault name> --name <public key secret name> --file $HOME/public.pgp
@@ -191,7 +258,6 @@ Retrieve your keys from external device by copying them into the .gnupg director
 ```bash
 cp <path/to/gpg_pub/key> $HOME/.gnupg/public.pem
 ```
-
 ```bash
 cp <path/to/gpg_priv/key> $HOME/.gnupg/private.pem
 ```
@@ -208,8 +274,10 @@ Add the key to GPG agent
 gpg --import $HOME/.gnupg/private.pem
 ```
 
+---
+
 ### Export required env variables to bashrc
-<em>(Ubuntu & WSL2 - Ubuntu distro)</em>
+<em>(Ubuntu & WSL2)</em>
 
 These are necessary to build your git config file, some are required at container build time <br>
 and others are required at container runtime, therefore it's recommended to keep these env variables <br>
@@ -227,8 +295,10 @@ EOT
 . $HOME/.bashrc
 ```
 
+---
+
 ### Set pinentry-mode in gpg conf file
-<em>(Ubuntu & WSL2 - Ubuntu distro)</em>
+<em>(Ubuntu & WSL2)</em>
 
 This fixes an issue where gpg does not prompt for the passphrase
 when attempting to sign a commit in the container.
@@ -239,13 +309,16 @@ pinentry-mode loopback
 EOT
 ```
 
+---
+
 ### Define required keychain command in bash_profile
+<em>(WSL2 ONLY)</em>
 
+Skip to the [Create the workspace dir and clone the repo with recurse submodules](#create-the-workspace-dir-and-clone-the-repo-with-recurse-submodules) if not on WSL2
 This is required in WSL2 to automatically start the agent and add the ssh key to it
-NOTE: Only do this if using WSL2 - Ubuntu distro. <br>
-Skip to the [Create the workspace dir and clone the repo with recurse submodules](#create-the-workspace-dir-and-clone-the-repo-with-recurse-submodules) otherwise
+ - NOTE: Only do this if using WSL2. <br>
 
-#### WSL2 - Ubuntu distro
+#### WSL2
 
 ```bash
 cat <<EOT > $HOME/.bash_profile
@@ -260,54 +333,10 @@ EOT
 . $HOME/.bash_profile
 ```
 
-### Create the workspace dir and clone the repo with recurse submodules
-<em>(Ubuntu & WSL2 - Ubuntu distro)</em>
-
-The workspace directory is a volume in the container, it's important <br>
-to clone all the repos and do all the important work in this directory <br>
-since it will be preserved between container shutdowns.
-
-```bash
-mkdir -p $HOME/workspace 
-cd $HOME/workspace
-```
-
-```bash
-git clone --recurse-submodules -j8 git@github.com:florez-carlos/dotfiles.git
-cd dotfiles
-```
-
-### Install required dependencies on the host machine
-
-#### Ubuntu
-
-Run the install target. <br>
-NOTE: This will install Docker and MesloLGS fonts on the host machine
-
-```bash
-sudo make install -e USER=$USER -e HOME=$HOME
-```
-
-Log out and log back in for group changes to take effect
-
 ---
 
-### WSL2 - Ubuntu distro
-
-Manually install MesloLGS fonts in Windows. <br>
-Download the following fonts, click on each font once downloaded and click install when prompted:
-
- * [Bold Italic](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Bold%20Italic.ttf)
- * [Bold](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Bold.ttf)
- * [Italic](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Italic.ttf)
- * [Regular](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Regular.ttf)
-
-Once the fonts have been installed, open the Windows terminal settings and change the face font to 'MesloLGS NF' for the ubuntu profile. <br>
-NOTE: You might have to restart your terminal for changes to take effect
-
-
 ### Login to the Github container registry to gain access to the base image
-<em>(Ubuntu & WSL2 - Ubuntu distro)</em>
+<em>(Ubuntu & WSL2)</em>
 
 This is required to build the image. <br>
 
@@ -330,8 +359,10 @@ echo $GIT_PAT | docker login ghcr.io -u $GIT_USER_USERNAME --password-stdin
 make build
 ```
 
+---
+
 ### Running the dev env
-<em>(Ubuntu & WSL2 - Ubuntu distro)</em>
+<em>(Ubuntu & WSL2)</em>
 
 The dev env is a runnig docker container that is being exec into
 
