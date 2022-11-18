@@ -34,9 +34,12 @@ The following platforms are supported: <br>
  - Ubuntu
  - WSL2 (Ubuntu distro) from here on referred only as 'WSL2'
 
-- NOTE: Each step has a different set of instructions for each supported platform, <br>
-some steps are global and will be marked with: <em>(Ubuntu & WSL2)</em>, which means <br>
-the steps are to be followed by Ubuntu AND WSL2 installations.
+```diff
+! NOTE: Each step has a different set of instructions for each supported platform,
+! some steps are global and will be marked with: <em>(Ubuntu & WSL2)</em>, which means
+! the steps are to be followed by Ubuntu AND WSL2 installations.
+```
+---
 
 ### Install basic dependencies
 
@@ -94,8 +97,9 @@ NOTE: This will install Docker and MesloLGS fonts on the host machine
 ```bash
 sudo make install -e USER=$USER -e HOME=$HOME
 ```
-
+```diff
 - IMPORTANT: Log out and log back in for group changes to take effect
+```
 
 ### WSL2
 
