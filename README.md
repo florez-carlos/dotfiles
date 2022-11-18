@@ -34,11 +34,9 @@ The following platforms are supported: <br>
  - Ubuntu
  - WSL2 (Ubuntu distro) from here on referred only as 'WSL2'
 
-```diff
-! NOTE: Each step has a different set of instructions for each supported platform,
-! some steps are global and will be marked with: <em>(Ubuntu & WSL2)</em>, which means
-! the steps are to be followed by Ubuntu AND WSL2 installations.
-```
+:warning: **Each step has a different set of instructions for each supported platform,** <br>
+**some steps are global and will be marked with: <em>(Ubuntu & WSL2)</em>, which means** <br>
+**the steps are to be followed by Ubuntu AND WSL2 installations.** :warning:
 ---
 
 ### Install basic dependencies
@@ -97,9 +95,7 @@ NOTE: This will install Docker and MesloLGS fonts on the host machine
 ```bash
 sudo make install -e USER=$USER -e HOME=$HOME
 ```
-```diff
-- IMPORTANT: Log out and log back in for group changes to take effect
-```
+:exclamation: **IMPORTANT: Log out and log back in for group changes to take effect before proceeding.**
 
 ### WSL2
 
@@ -118,7 +114,7 @@ Download the following fonts, click on each font once downloaded and click insta
  * [Regular](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Regular.ttf)
 
 Once the fonts have been installed, open the Windows terminal settings and change the face font to 'MesloLGS NF' for the ubuntu profile. <br>
- - NOTE: You might have to restart your terminal for changes to take effect.
+:warning: **You might have to restart your terminal for changes to take effect.**
 
 ---
 
