@@ -44,9 +44,9 @@ sudo apt-get install git make -y
 #### WSL2 - Ubuntu distro
 
 First, follow these instructions to install the following Windows dependencies:
- * [Windows Terminal] (https://github.com/microsoft/terminal#via-github)
- * [WSL2] (https://docs.microsoft.com/en-us/windows/wsl/install)
- * [Docker Desktop] (https://docs.docker.com/desktop/windows/install/)
+ * [Windows Terminal](https://github.com/microsoft/terminal#via-github)
+ * [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install)
+ * [Docker Desktop](https://docs.docker.com/desktop/windows/install/)
 
 Ensure all 3 are installed and that Docker Desktop is running. <br>
 
@@ -60,18 +60,18 @@ sudo apt-get install git make keychain socat -y
 ### Generate a new SSH key
 <em>(Ubuntu & WSL2 - Ubuntu distro)</em>
 
-If you already have an existing SSH key, skip to [Import an existing SSH key] (#import-an-existing-ssh-key) <br>
+If you already have an existing SSH key, skip to [Import an existing SSH key](#import-an-existing-ssh-key) <br>
 
 For reference on generating an [SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent) <br>
 
 ### Import an existing SSH key
 <em>(Ubuntu & WSL2 - Ubuntu distro)</em>
 
-If you have generated a new SSH key following the instruction above, skip to [Generate a new GPG key] (#generate-a-new-gpg-key)
+If you have generated a new SSH key following the instruction above, skip to [Generate a new GPG key](#generate-a-new-gpg-key)
 
 #### Export from the device where keys are available
 
-If your keys are already exported to an external device or the cloud, skip to [Import to the new device] (#import-to-the-new-device-1) <br>
+If your keys are already exported to an external device or the cloud, skip to [Import to the new device](#import-to-the-new-device-1) <br>
 
 Export your existing keys to an external device
 
@@ -134,18 +134,18 @@ If so, then the ssh agent is available and the key has been correctly added.
 ### Generate a new GPG key
 <em>(Ubuntu & WSL2 - Ubuntu distro)</em>
 
-If you already have an existing GPG key, skip to [Import an existing GPG key] (#import-an-existing-gpg-key)
+If you already have an existing GPG key, skip to [Import an existing GPG key](#import-an-existing-gpg-key)
 
 For reference on generating a [GPG key](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key)
 
 ### Import an existing GPG key
 <em>(Ubuntu & WSL2 - Ubuntu distro)</em>
 
-If you have generated a new GPG key following the instructions above, skip to [Export required env variables to bashrc] (#export-required-env-variables-to-bashrc)
+If you have generated a new GPG key following the instructions above, skip to [Export required env variables to bashrc](#export-required-env-variables-to-bashrc)
 
 #### Export from the device where keys are available
 
-If your keys are already exported to an external device or the cloud, skip to [Import to the new device] (#import-to-the-new-device-2) <br>
+If your keys are already exported to an external device or the cloud, skip to [Import to the new device](#import-to-the-new-device-2) <br>
 
 Export your existing keys. <br>
 NOTE: replace brackets with the email associated with your key.
@@ -297,10 +297,10 @@ Log out and log back in for group changes to take effect
 Manually install MesloLGS fonts in Windows. <br>
 Download the following fonts, click on each font once downloaded and click install when prompted:
 
- * [Bold Italic] (https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Bold%20Italic.ttf)
- * [Bold] (https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Bold.ttf)
- * [Italic] (https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Italic.ttf)
- * [Regular] (https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Regular.ttf)
+ * [Bold Italic](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Bold%20Italic.ttf)
+ * [Bold](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Bold.ttf)
+ * [Italic](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Italic.ttf)
+ * [Regular](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Regular.ttf)
 
 Once the fonts have been installed, open the Windows terminal settings and change the face font to 'MesloLGS NF' for the ubuntu profile. <br>
 NOTE: You might have to restart your terminal for changes to take effect
