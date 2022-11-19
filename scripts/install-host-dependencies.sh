@@ -154,6 +154,32 @@ install_docker() {
 
 }
 
+install_kubectl() {
+
+    printf "%s\n" ""
+    printf "%s\n" " -> Beginning add kubectl ppa: "
+    printf "%s\n" ""
+    sleep 1
+
+    curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | tee /etc/apt/sources.list.d/kubernetes.list
+    apt-get update
+    apt-get install kubectl -y
+
+}
+
+install_minikube() {
+
+    printf "%s\n" ""
+    printf "%s\n" " -> Beginning add minikube: "
+    printf "%s\n" ""
+    sleep 1
+
+    curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb
+    dpkg -i minikube_latest_amd64.deb
+
+
+}
 
 if [[ $UID != 0 ]]; then
     printf "%s\n" "${color_red}ERROR:${color_normal}Please run this script with sudo"
@@ -165,6 +191,8 @@ get_dependencies
 check_dependencies
 copy_fonts
 install_docker
+install_kubectl
+install_minikube
 printf "%s\n" ""
 printf "%s\n" "${color_green}SUCCESS${color_normal}: Installation complete!"
 printf "%s\n" ""
