@@ -2,18 +2,21 @@ export MODULE_HOME := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 SCRIPTS_DIR := $(MODULE_HOME)/scripts
 export DOT_HOME_CONFIG := $(MODULE_HOME)/config
 INSTALL_HOST_DEPENDENCIES := $(SCRIPTS_DIR)/install-host-dependencies.sh
-UNINSTALL_HOST_DEPENDENCIES := $(SCRIPTS_DIR)/uninstall-host-dependencies.sh
+INSTALL_HOST_DEPENDENCIES_WSL2 := $(SCRIPTS_DIR)/install-host-dependencies-wsl2.sh
 export UID := $(shell id -u)
 export GID := $(shell id -g)
 export GROUP := $(shell id -gn)
 export GPG_TTY := $(shell tty)
-export IMAGE_VERSION := 1.1.0
-PASSWORD ?= $(shell bash -c 'read -r -s -p "Linux Password to be used in the dev env: " pwd; echo $$pwd')
+export IMAGE_VERSION := 1.2.0
+PASSWORD ?= $(shell bash -c 'read -r -s -p "Enter the Unix password to use inside the container: " pwd; echo $$pwd')
 
 .PHONY: install build run exec trash start reload
 
 install:
 	@$(INSTALL_HOST_DEPENDENCIES)
+
+install-wsl2:
+	@$(INSTALL_HOST_DEPENDENCIES_WSL2)
 
 # BUILDKIT instruction is required to use the secret flag
 build:
