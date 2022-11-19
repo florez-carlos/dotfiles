@@ -118,6 +118,12 @@ Download the following fonts, click on each font once downloaded and click insta
 Once the fonts have been installed, open the Windows terminal settings and change the face font to 'MesloLGS NF' for the ubuntu profile. <br>
 > :warning: **Restart your terminal for changes to take effect.**
 
+Run the install-wsl2 target. <br>
+> :information_source: **This will install minikube, kubectl, jq on the host machine.**
+```bash
+sudo make install-wsl2
+```
+
 ---
 
 ## Generate a new SSH key
