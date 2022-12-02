@@ -36,6 +36,7 @@ build:
 
 run:
 	docker run -it --rm -d \
+		--net=host \
 		--name dev-env-cont \
 		-v $$(dirname $$SSH_AUTH_SOCK):$$(dirname $$SSH_AUTH_SOCK) \
 		-v $$HOME/workspace:$$HOME/workspace \
