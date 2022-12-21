@@ -7,7 +7,7 @@ export UID := $(shell id -u)
 export GID := $(shell id -g)
 export GROUP := $(shell id -gn)
 export GPG_TTY := $(shell tty)
-export IMAGE_VERSION := 1.2.0
+export IMAGE_VERSION := 1.3.0
 PASSWORD ?= $(shell bash -c 'read -r -s -p "Enter the Unix password to use inside the container: " pwd; echo $$pwd')
 
 .PHONY: install build run exec trash start reload

@@ -1,4 +1,4 @@
-FROM ghcr.io/florez-carlos/dev-env-ubuntu-base-img:v1.4.0
+FROM ghcr.io/florez-carlos/dev-env-ubuntu-base-img:v1.5.0
 LABEL org.opencontainers.image.authors="carlos@florez.co.uk"
 
 #Configurable args, define these with your own, these are build time args
@@ -85,6 +85,7 @@ RUN ln -s $DOT_HOME_LIB/powerlevel10k ${HOME}/.oh-my-zsh/custom/themes/powerleve
 #Install jdtls (Java LSP) and custom maven
 RUN tar -xvzf /tmp/jdtls.tar.gz -C $DOT_HOME_LIB/jdtls
 RUN tar -xvzf /tmp/maven.tar.gz -C $DOT_HOME_LIB/maven
+RUN cp /tmp/lombok.jar $DOT_HOME_LIB/lombok.jar
 
 #Creates Git configuration
 RUN cd $DOT_HOME_SCRIPTS && ./git-config.sh 
