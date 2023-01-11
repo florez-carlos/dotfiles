@@ -7,11 +7,13 @@ cat << EOF > $XDG_CONFIG_HOME/git/config
 [core]
 	editor = nvim
 	whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
-	pager = delta
 [gpg]
     program = gpg
 [commit]
     gpgsign = true
-
+[pager]
+    diff = false
+    show = false
+    status = false
 EOF
 

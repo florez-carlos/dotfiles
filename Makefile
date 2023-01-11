@@ -52,4 +52,4 @@ trash:
 
 start: run exec
 
-reload: trash run exec
+reload: trash start
