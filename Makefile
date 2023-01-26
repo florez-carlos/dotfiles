@@ -44,12 +44,12 @@ run:
 		-e SSH_AUTH_SOCK=$$SSH_AUTH_SOCK \
 		do-not-push/$(GIT_USER_USERNAME)/dev-env-img:v$$IMAGE_VERSION
 
-exec:
+hook:
 	docker exec -it dev-env-cont /usr/bin/zsh
 
 trash:
 	docker container stop dev-env-cont
 
-start: run exec
+start: run hook
 
 reload: trash start
