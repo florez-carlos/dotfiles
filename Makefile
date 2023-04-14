@@ -30,6 +30,10 @@ build:
 		--build-arg GIT_USER_USERNAME \
 		--build-arg GIT_USER_EMAIL \
 		--build-arg GIT_USER_SIGNINGKEY \
+		--build-arg AZ_LOGIN_APP_ID \
+		--build-arg AZ_LOGIN_TENANT_ID \
+		--build-arg AZ_LOGIN_CERT_PATH \
+		--build-arg AZ_LOGIN_VAULT_NAME \
 		--secret id=PASSWORD,src=$$HOME/delete-me.txt \
 		-t do-not-push/$(GIT_USER_USERNAME)/dev-env-img:v$$IMAGE_VERSION .
 	@rm $$HOME/delete-me.txt

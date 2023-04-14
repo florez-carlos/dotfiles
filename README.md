@@ -295,7 +295,11 @@ cat <<EOT >> $HOME/.bashrc
 export GIT_USER_NAME=<Git name, not the username but the name>
 export GIT_USER_USERNAME=<Git username, not the name but the username>
 export GIT_USER_SIGNINGKEY=<gpg public key id}
-export GIT_USER_EMAIL=<example@example.com}
+export GIT_USER_EMAIL=<example@example.com>
+export AZ_LOGIN_APP_ID=<Azure login service principal app id>
+export AZ_LOGIN_TENANT_ID=<Azure login service principal tenant id>
+export AZ_LOGIN_CERT_PATH=<Azure login service principal certificate path>
+export AZ_LOGIN_VAULT_NAME=<Azure login service principal vault name>
 EOT
 . $HOME/.bashrc
 ```
