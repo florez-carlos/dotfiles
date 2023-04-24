@@ -401,6 +401,7 @@ command when needing to delete a GPG key:
 ```bash
 gpg --batch --yes delete-keys
 ```
+TODO: git submodule update --remote --merge
 
 # License
 [MIT](https://choosealicense.com/licenses/mit/)
