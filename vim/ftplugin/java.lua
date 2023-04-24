@@ -4,8 +4,7 @@ local xdg_data_home = os.getenv("XDG_DATA_HOME")
 local jdtls_home = dot_home_lib .. '/jdtls/'
 local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t')
 local data_dir = xdg_data_home .. '/jdtls-data/' .. project_name
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+capabilities = require('cmp_nvim_lsp').default_capabilities()
 local config = {
   -- The command that starts the language server
   -- See: https://github.com/eclipse/eclipse.jdt.ls#running-from-the-command-line

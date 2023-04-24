@@ -6,7 +6,6 @@ opt.autoindent = true
 vim.g.neon_style = "dark"
 vim.g.neon_italic_keyword = true
 vim.g.neon_italic_function = true
-vim.cmd('colorscheme neon')
 vim.cmd('syntax on')
 opt.swapfile = true
 opt.dir = '/tmp'
