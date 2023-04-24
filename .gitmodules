@@ -91,3 +91,6 @@
 [submodule "vim/pack/plugins/start/Comment.nvim"]
 	path = vim/pack/plugins/start/Comment.nvim
 	url = git@github.com:numToStr/Comment.nvim.git
+[submodule "vim/pack/plugins/start/vscode.nvim"]
+	path = vim/pack/plugins/start/vscode.nvim
+	url = git@github.com:Mofiqul/vscode.nvim.git
