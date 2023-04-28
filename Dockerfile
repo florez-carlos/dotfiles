@@ -1,4 +1,4 @@
-FROM ghcr.io/florez-carlos/dev-env-ubuntu-base-img:v2.0.0
+FROM ghcr.io/florez-carlos/dev-env-ubuntu-base-img:latest
 LABEL org.opencontainers.image.authors="carlos@florez.co.uk"
 
 #Configurable args, define these with your own, these are build time args
