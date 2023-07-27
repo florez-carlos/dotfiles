@@ -1,11 +1,6 @@
 # Dotfiles
 
-Creates a containerized development environment with the following:
-
-- zsh/oh-my-zsh
-- Powerlevel10k
-- neovim w/ LSP
-- SSH and GPG keys usable in the container
+A containerized development environment with essential tools and packages
 
 # Table of Contents
 
@@ -35,35 +30,30 @@ Creates a containerized development environment with the following:
 The following platforms are supported: <br>
 
  - Ubuntu
- - WSL2 (Ubuntu distro) from here on referred only as 'WSL2'
+ - ~~WSL2 (Ubuntu distro) from here on referred only as 'WSL2'~~ (Support for WSL2 has been removed since V1.3.0)
 
-> :warning: **Each step has a different set of instructions for each supported platform,** <br>
-**some steps are global and will be marked with: <em>(Ubuntu & WSL2)</em>, which means** <br>
-**the steps are to be followed by Ubuntu AND WSL2 installations.**
 ---
+
+## Configure SSH client (Optional)
+
+You only need to do this if connecting remotely from a different device
+
+Manually install MesloLGS fonts<br>
+Download the following fonts and install on your machine:
+
+ * [Bold Italic](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Bold%20Italic.ttf)
+ * [Bold](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Bold.ttf)
+ * [Italic](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Italic.ttf)
+ * [Regular](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Regular.ttf)
+
 
 ## Install basic dependencies
 
 These dependencies are required to clone the repo and invoke the Makefile targets. <br>
 
-> ### Ubuntu
-
 ```bash
 sudo apt-get update -y && sudo apt-get upgrade -y
-sudo apt-get install git make -y
-```
-
-> ### WSL2
-
-Follow these instructions to install the following Windows dependencies:
-
- * [Windows Terminal](https://github.com/microsoft/terminal#via-github)
- * [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install)
-
-Open the Ubuntu distribution in Windows Terminal and run the following commands:
-```bash
-sudo apt-get update -y && sudo apt-get upgrade -y
-sudo apt-get install git make keychain socat -y
+sudo apt-get install git make keychain -y
 ```
 
 ---
