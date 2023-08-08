@@ -49,14 +49,14 @@ Download the following fonts and install on your machine:
 ### Add SSH key
 Add the SSH key to the SSH agent in order to connect to the remote machine.
 
-On Ubuntu you can also install keychain to automatically start the SSH agent and add the key on login.
+:information_source: If using Ubuntu you can also install keychain to automatically start the SSH agent and add the key on login.
 
-:infromation_source: Run these commands if using Ubuntu to install and setup keychain
 ```bash
+# Only run this if using Ubuntu as your SSH client
 sudo apt-get update && sudo apt-get upgrade
 sudo apt-get install keychain -y
 cat <<"EOT" > $HOME/.bash_profile
-eval `keychain --eval --agents ssh id_ed25519`
+eval `keychain --eval --agents ssh id_rsa`
 if [ -n "$BASH_VERSION" ]; then
     # include .bashrc if it exists
     if [ -f "$HOME/.bashrc" ]; then
