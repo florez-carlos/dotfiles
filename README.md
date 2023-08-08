@@ -38,13 +38,35 @@ The following platforms are supported: <br>
 
 You only need to do this if connecting remotely from a different device
 
-Manually install MesloLGS fonts<br>
+### Manually install MesloLGS fonts
 Download the following fonts and install on your machine:
 
  * [Bold Italic](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Bold%20Italic.ttf)
  * [Bold](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Bold.ttf)
  * [Italic](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Italic.ttf)
  * [Regular](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Regular.ttf)
+
+### Add SSH key
+Add the SSH key to the SSH agent in order to connect to the remote machine.
+
+On Ubuntu you can also install keychain to automatically start the SSH agent and add the key on login.
+
+:infromation_source: Run these commands if using Ubuntu to install and setup keychain
+```bash
+sudo apt-get update && sudo apt-get upgrade
+sudo apt-get install keychain -y
+cat <<"EOT" > $HOME/.bash_profile
+eval `keychain --eval --agents ssh id_ed25519`
+if [ -n "$BASH_VERSION" ]; then
+    # include .bashrc if it exists
+    if [ -f "$HOME/.bashrc" ]; then
+        . "$HOME/.bashrc"
+    fi
+fi
+EOT
+. $HOME/.bash_profile
+```
+
 
 
 ## Install basic dependencies
