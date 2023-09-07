@@ -46,6 +46,8 @@ Download the following fonts and install on your machine:
  * [Italic](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Italic.ttf)
  * [Regular](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Regular.ttf)
 
+:warning: After installing the fonts you might have to manually set them on the terminal preferences/settings
+
 ### Add SSH key
 Add the SSH key to the SSH agent in order to connect to the remote machine.
 
