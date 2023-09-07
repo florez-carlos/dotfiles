@@ -32,7 +32,6 @@ The following platforms are supported: <br>
  - Ubuntu
  - ~~WSL2 (Ubuntu distro) from here on referred only as 'WSL2'~~ (Support for WSL2 has been removed since V1.3.0)
 
----
 
 ## Configure SSH client (Optional)
 
@@ -50,12 +49,9 @@ Download the following fonts and install on your machine:
 
 ### Add SSH key
 
-If using Ubuntu as the SSH client, follow [these instructions](#adding-an-ssh-key) to add the SSH key to the SSH agent in order to connect to the remote machine.
+:information_source: If using Ubuntu as the SSH client, follow [these instructions](#adding-an-ssh-key) to add the SSH key to the SSH agent in order to connect to the remote machine.
 
-
-
-
-:information_source: If using Ubuntu you can also install keychain to automatically start the SSH agent and add the key on login.
+:information_source: If using Ubuntu as the SSH client, you can also install keychain to automatically start the SSH agent and add the key on login.
 
 ```bash
 # Only run this if using Ubuntu as your SSH client
@@ -74,8 +70,6 @@ EOT
 ```
 ---
 
-
-
 ## Install basic dependencies
 
 These dependencies are required to clone the repo and invoke the Makefile targets. <br>
@@ -85,10 +79,7 @@ sudo apt-get update -y && sudo apt-get upgrade -y
 sudo apt-get install git make keychain -y
 ```
 
-
-
 ## Create the workspace dir and clone the repo with recurse submodules
-
 
 The workspace directory is a volume in the container, it's important to clone all the repos and do all the <br> 
 important work in this directory since it will be preserved between container shutdowns.
