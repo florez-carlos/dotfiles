@@ -49,7 +49,11 @@ Download the following fonts and install on your machine:
 :warning: After installing the fonts you might have to manually set them on the terminal preferences/settings
 
 ### Add SSH key
-Add the SSH key to the SSH agent in order to connect to the remote machine.
+
+If using Ubuntu as the SSH client, follow [these instructions](#adding-an-ssh-key) to add the SSH key to the SSH agent in order to connect to the remote machine.
+
+
+
 
 :information_source: If using Ubuntu you can also install keychain to automatically start the SSH agent and add the key on login.
 
@@ -68,6 +72,7 @@ fi
 EOT
 . $HOME/.bash_profile
 ```
+---
 
 
 
@@ -80,10 +85,10 @@ sudo apt-get update -y && sudo apt-get upgrade -y
 sudo apt-get install git make keychain -y
 ```
 
----
+
 
 ## Create the workspace dir and clone the repo with recurse submodules
-> <em>(Ubuntu & WSL2)</em>
+
 
 The workspace directory is a volume in the container, it's important to clone all the repos and do all the <br> 
 important work in this directory since it will be preserved between container shutdowns.
@@ -91,9 +96,6 @@ important work in this directory since it will be preserved between container sh
 ```bash
 mkdir -p $HOME/workspace 
 cd $HOME/workspace
-```
-
-```bash
 git clone --recurse-submodules -j8 git@github.com:florez-carlos/dotfiles.git
 cd dotfiles
 ```
@@ -406,6 +408,30 @@ make reload
 To only trash Dotfiles and not start a new one:
 ```bash
 make trash
+```
+
+# Adding an SSH key
+
+Create the .ssh directory and assign correct permissions
+
+```bash
+mkdir -p $HOME/.ssh
+sudo chmod 700 $HOME/.ssh
+```
+
+Place the keys into the .ssh directory
+
+```bash
+# This example assumes the key already exists somewhere in the same machine
+cp <path/to/private/ssh/key> $HOME/.ssh/id_rsa
+cp <path/to/public/ssh/key> $HOME/.ssh/id_rsa.pub
+```
+
+Assign the correct permissions to the SSH keys
+
+```bash
+sudo chmod 600 $HOME/.ssh/id_rsa
+sudo chmod 600 $HOME/.ssh/id_rsa.pub
 ```
 
 # Known Issues
