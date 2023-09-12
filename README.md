@@ -53,6 +53,8 @@ Download the following fonts and install on your machine:
 
 :information_source: If using Ubuntu as the SSH client, you can also install keychain to automatically start the SSH agent and add the key on login.
 
+TODO: THIS BLOCK NEEDS TO BE EXTRACTED OR ADDED TO SSH ADD KEY SECTION
+
 ```bash
 # Only run this if using Ubuntu as your SSH client
 sudo apt-get update && sudo apt-get upgrade
@@ -79,6 +81,8 @@ sudo apt-get update -y && sudo apt-get upgrade -y
 sudo apt-get install git make keychain -y
 ```
 
+## TODO: Add keys to host machine here! AND SSH AGENT!
+
 ## Create the workspace dir and clone the repo with recurse submodules
 
 The workspace directory is a volume in the container, it's important to clone all the repos and do all the <br> 
@@ -96,7 +100,6 @@ cd dotfiles
 
 These dependencies are directly installed to the host machine
 
-> ### Ubuntu
 
 Run the install target. <br>
 :information_source: This will install Docker and MesloLGS fonts on the host machine
@@ -106,33 +109,8 @@ sudo make install -e USER=$USER -e HOME=$HOME
 ```
 :exclamation: **Log out and log back in for group changes to take effect before proceeding.**
 
-> ### WSL2
-
-Follow these instructions to install Docker Desktop:
-
- * [Docker Desktop](https://docs.docker.com/desktop/windows/install/)
-
-Ensure Docker desktop is properly installed before proceeding. <br>
-
-Manually install MesloLGS fonts in Windows. <br>
-Download the following fonts, click on each font once downloaded and click install when prompted:
-
- * [Bold Italic](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Bold%20Italic.ttf)
- * [Bold](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Bold.ttf)
- * [Italic](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Italic.ttf)
- * [Regular](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Regular.ttf)
-
-Once the fonts have been installed, open the Windows terminal settings and change the face font to 'MesloLGS NF' for the ubuntu profile. <br>
-> :warning: **Restart your terminal for changes to take effect.**
-
-Run the install-wsl2 target. <br>
-> :information_source: **This will install minikube, kubectl, jq on the host machine.**
-```bash
-sudo make install-wsl2
-```
-
 ---
-
+TODO: this needs to be redone with RSA key
 ## Generate a new SSH key
 > <em>(Ubuntu & WSL2)</em>
 
@@ -290,7 +268,6 @@ gpg --import $HOME/.gnupg/private.pem
 ---
 
 ## Export required env variables to bashrc
-> <em>(Ubuntu & WSL2)</em>
 
 These are necessary to build your git config file, some are required at container build time and others are <br>
 required at container runtime, therefore it's recommended to keep these env variables in your .bashrc <br>
@@ -326,6 +303,7 @@ EOT
 
 ---
 
+TODO: This needs to be removed, exctracted into its own section
 ## Define required keychain command in bash_profile
 > <em>(WSL2 ONLY)</em>
 
