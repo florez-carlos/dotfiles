@@ -85,85 +85,8 @@ sudo pkill -u $USER
 ```
 
 
-## Generate a new GPG key
-> <em>(Ubuntu & WSL2)</em>
 
-If you already have an existing GPG key, skip to [Import an existing GPG key](#import-an-existing-gpg-key)
 
-For instructions on generating a [GPG key](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key)
-
---- 
-
-## Import an existing GPG key
-> <em>(Ubuntu & WSL2)</em>
-
-If you have generated a new GPG key following the instructions above, skip to [Export required env variables to bashrc](#export-required-env-variables-to-bashrc)
-
-### Export from the device where keys are available
-
-If your keys are already exported to an external device or the cloud, skip to [Import to the new device](#import-to-the-new-device-2) <br>
-
-Export your existing keys. <br>
-:exclamation: **replace brackets with the email associated with your key.**
-
-```bash
-gpg --output $HOME/public.pgp --armor --export <email@example.com>
-```
-
-```bash
-gpg --output $HOME/private.pgp --armor --export-secret-key <email@example.com>
-```
-
-Copy your existing keys to an external device
-
-```bash
-cp $HOME/public.pgp <path/to/external/device>
-```
-```bash
-cp $HOME/private.pgp <path/to/external/device>
-```
--OR- <br>
-
-Export your existing keys to Azure Vault. <br>
-:exclamation: **az cli is required to run the following commands.**
-
-```bash
-az keyvault secret set --vault-name <vault name> --name <public key secret name> --file $HOME/public.pgp
-```
-
-```bash
-az keyvault secret set --vault-name <vault name> --name <private key secret name> --file $HOME/private.pgp
-```
-
-### Import to the new device
-
-Create the .gnupg directory
-
-```bash
-mkdir -p $HOME/.gnupg
-```
-
-Retrieve your keys from external device by copying them into the .gnupg directory
-```bash
-cp <path/to/gpg_pub/key> $HOME/.gnupg/public.pem
-```
-```bash
-cp <path/to/gpg_priv/key> $HOME/.gnupg/private.pem
-```
-
-Assign the correct permissions to your keys
-
-```bash
-sudo chmod 600 $HOME/.gnupg/private.pem
-sudo chmod 600 $HOME/.gnupg/public.pem
-```
-
-Add the key to GPG agent
-```bash
-gpg --import $HOME/.gnupg/private.pem
-```
-
----
 
 ## Export required env variables to bashrc
 
@@ -189,7 +112,6 @@ EOT
 ---
 
 ## Set pinentry-mode in gpg conf file
-> <em>(Ubuntu & WSL2)</em>
 
 This fixes an issue where gpg does not prompt for the passphrase when attempting to sign a commit in the container.
 
@@ -198,33 +120,6 @@ cat <<EOT >> $HOME/.gnupg/gpg.conf
 pinentry-mode loopback
 EOT
 ```
-
----
-
-TODO: This needs to be removed, exctracted into its own section
-## Define required keychain command in bash_profile
-> <em>(WSL2 ONLY)</em>
-
-Skip to the [Create the workspace dir and clone the repo with recurse submodules](#create-the-workspace-dir-and-clone-the-repo-with-recurse-submodules) if not on WSL2. <br>
-This is required in WSL2 to automatically start the agent and add the ssh key to it. <br>
-:exclamation: **Only do this if using WSL2.** <br>
-
-> ### WSL2
-
-```bash
-cat <<"EOT" > $HOME/.bash_profile
-eval `keychain --eval --agents ssh id_ed25519`
-if [ -n "$BASH_VERSION" ]; then
-    # include .bashrc if it exists
-    if [ -f "$HOME/.bashrc" ]; then
-        . "$HOME/.bashrc"
-    fi
-fi
-EOT
-. $HOME/.bash_profile
-```
-
----
 
 ## Login to the Github container registry to gain access to the base image
 > <em>(Ubuntu & WSL2)</em>
