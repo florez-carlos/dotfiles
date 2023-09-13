@@ -27,50 +27,12 @@ A containerized development environment with essential tools and packages
 
 # Installation
 
-The following platforms are supported: <br>
+:information_source: Supported Distros: <br>
 
- - Ubuntu
- - ~~WSL2 (Ubuntu distro) from here on referred only as 'WSL2'~~ (Support for WSL2 has been removed since V1.3.0)
+ - Ubuntu 20.04 or above
 
+:information_source: If using a remote SSH client to connect to the host machine, make sure to [follow these instructions](#configure-a-remote-ssh-client-optional) to set up the remote SSH client
 
-## Configure SSH client (Optional)
-
-You only need to do this if connecting remotely from a different device
-
-### Manually install MesloLGS fonts
-Download the following fonts and install on your machine:
-
- * [Bold Italic](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Bold%20Italic.ttf)
- * [Bold](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Bold.ttf)
- * [Italic](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Italic.ttf)
- * [Regular](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Regular.ttf)
-
-:warning: After installing the fonts you might have to manually set them on the terminal preferences/settings
-
-### Add SSH key
-
-:information_source: If using Ubuntu as the SSH client, follow [these instructions](#adding-an-ssh-key) to add the SSH key to the SSH agent in order to connect to the remote machine.
-
-:information_source: If using Ubuntu as the SSH client, you can also install keychain to automatically start the SSH agent and add the key on login.
-
-TODO: THIS BLOCK NEEDS TO BE EXTRACTED OR ADDED TO SSH ADD KEY SECTION
-
-```bash
-# Only run this if using Ubuntu as your SSH client
-sudo apt-get update && sudo apt-get upgrade
-sudo apt-get install keychain -y
-cat <<"EOT" > $HOME/.bash_profile
-eval `keychain --eval --agents ssh id_rsa`
-if [ -n "$BASH_VERSION" ]; then
-    # include .bashrc if it exists
-    if [ -f "$HOME/.bashrc" ]; then
-        . "$HOME/.bashrc"
-    fi
-fi
-EOT
-. $HOME/.bash_profile
-```
----
 
 ## Install basic dependencies
 
@@ -379,7 +341,30 @@ To only trash Dotfiles and not start a new one:
 make trash
 ```
 
+# Configure a remote SSH client (Optional)
+
+You only need to do this if connecting remotely from a different device
+
+### Manually install MesloLGS fonts
+Download the following fonts and install on your machine:
+
+ * [Bold Italic](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Bold%20Italic.ttf)
+ * [Bold](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Bold.ttf)
+ * [Italic](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Italic.ttf)
+ * [Regular](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Regular.ttf)
+
+:warning: After installing the fonts you might have to manually set them on the terminal preferences/settings
+
+### Add SSH key
+
+:information_source: If using Ubuntu as the SSH client, follow [these instructions](#adding-an-ssh-key) to add the SSH key to the SSH agent in order to connect to the remote machine.
+
+
 # Adding an SSH key
+> <em>Ubuntu</em>
+
+
+:warning: It's assumed name of the key is <em>id_rsa</em> </br>
 
 Create the .ssh directory and assign correct permissions
 
@@ -388,7 +373,8 @@ mkdir -p $HOME/.ssh
 sudo chmod 700 $HOME/.ssh
 ```
 
-Place the keys into the .ssh directory
+Place the keys into the .ssh directory </br>
+:warning: Replace the path in brackets with the path to the existing SSH key
 
 ```bash
 # This example assumes the key already exists somewhere in the same machine
@@ -401,6 +387,23 @@ Assign the correct permissions to the SSH keys
 ```bash
 sudo chmod 600 $HOME/.ssh/id_rsa
 sudo chmod 600 $HOME/.ssh/id_rsa.pub
+```
+
+Install the keychain dependency, which starts the SSH agent automatically on login
+
+```bash
+sudo apt-get update && sudo apt-get upgrade
+sudo apt-get install keychain -y
+cat <<"EOT" > $HOME/.bash_profile
+eval `keychain --eval --agents ssh id_rsa`
+if [ -n "$BASH_VERSION" ]; then
+    # include .bashrc if it exists
+    if [ -f "$HOME/.bashrc" ]; then
+        . "$HOME/.bashrc"
+    fi
+fi
+EOT
+. $HOME/.bash_profile
 ```
 
 # Known Issues
