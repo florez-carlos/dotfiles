@@ -35,19 +35,31 @@ A containerized development environment with essential tools and packages
 
 
 ## Install basic dependencies
-
+  
 These dependencies are required to clone the repo and invoke the Makefile targets. <br>
 
 ```bash
 sudo apt-get update -y && sudo apt-get upgrade -y
-sudo apt-get install git make keychain -y
+sudo apt-get install git make -y
 ```
 
-## TODO: Add keys to host machine here! AND SSH AGENT!
+## Add SSH and GPG keys
+
+These are necessary for repository authentication and commit signing
+
+### SSH key
+
+Follow the instructions to [add an existing SSH key](#adding-an-existing-ssh-key) </br>
+:information_source:If you don't have an existing SSH key, follow these instructions to [create an SSH key](#creating-an-ssh-key)
+
+### GPG key
+
+Follow the instructions to [add an existing GPG key](#adding-an-existing-gpg-key) </br>
+:information_source: If you don't have an existing GPG key, follow these instructions to [create a GPG key](#creating-a-gpg-key)
 
 ## Create the workspace dir and clone the repo with recurse submodules
 
-The workspace directory is a volume in the container, it's important to clone all the repos and do all the <br> 
+The workspace directory is a [volume](https://docs.docker.com/storage/volumes/) in the Docker container, it's important to clone all the repos and do all the <br> 
 important work in this directory since it will be preserved between container shutdowns.
 
 ```bash
@@ -56,12 +68,10 @@ cd $HOME/workspace
 git clone --recurse-submodules -j8 git@github.com:florez-carlos/dotfiles.git
 cd dotfiles
 ```
----
 
 ## Install required dependencies on the host machine
 
 These dependencies are directly installed to the host machine
-
 
 Run the install target. <br>
 :information_source: This will install Docker and MesloLGS fonts on the host machine
@@ -69,85 +79,11 @@ Run the install target. <br>
 ```bash
 sudo make install -e USER=$USER -e HOME=$HOME
 ```
-:exclamation: **Log out and log back in for group changes to take effect before proceeding.**
-
----
-TODO: this needs to be redone with RSA key
-## Generate a new SSH key
-> <em>(Ubuntu & WSL2)</em>
-
-If you already have an existing SSH key, skip to [Import an existing SSH key](#import-an-existing-ssh-key) <br>
-
-For instructions on generating an [SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent) <br>
-
----
-
-## Import an existing SSH key
-> <em>(Ubuntu & WSL2)</em>
-
-If you have generated a new SSH key following the instruction above, skip to [Generate a new GPG key](#generate-a-new-gpg-key)
-
-### Export from the device where keys are available
-
-If your keys are already exported to an external device or the cloud, skip to [Import to the new device](#import-to-the-new-device-1) <br>
-
-Export your existing keys to an external device
-
+Log out and log back in for group changes to take effect </br>
 ```bash
-cp $HOME/.ssh/id_ed25519 <path/to/external/device>
-cp $HOME/.ssh/id_ed25519.pub <path/to/external/device>
-```
--OR- <br>
-
-Export your existing keys to Azure vault. <br>
-
-:exclamation: **az cli is required to run the following commands**.
-
-```bash
-az keyvault secret set --vault-name <vault name> --name <private key secret name> --file $HOME/.ssh/id_ed25519
-az keyvault secret set --vault-name <vault name> --name <public key secret name> --file $HOME/.ssh/id_ed25519.pub
+sudo pkill -u $USER
 ```
 
-### Import to the new device
-
-Create the .ssh directory and assign the correct permissions
-
-```bash
-mkdir -p $HOME/.ssh
-sudo chmod 700 $HOME/.ssh
-```
-
-Retrieve your keys from external device by copying them into the .ssh directory
-
-```bash
-cp <path/to/private/ssh/key> $HOME/.ssh/id_ed25519
-cp <path/to/public/ssh/key> $HOME/.ssh/id_ed25519.pub
-```
-Assign the correct permissions to your keys
-
-```bash
-sudo chmod 600 $HOME/.ssh/id_ed25519
-sudo chmod 600 $HOME/.ssh/id_ed25519.pub
-```
-
-Init the SSH agent and add the private key to it
-
-```bash
-eval "$(ssh-agent -s)"
-ssh-add $HOME/.ssh/id_ed25519
-```
-
-Confirm ssh agent is available and key is properly added
-
-```bash
-ssh-add -l
-```
-
-Running the above command should have a similar output to this: <br>
-> <em>256 SHA256:AaaaaaaaaaAAAAAAAAAAABBBBBbbbb example@email.com (ED25519)</em>
-If so, then the ssh agent is available and the key has been correctly added.
-
---- 
 
 ## Generate a new GPG key
 > <em>(Ubuntu & WSL2)</em>
@@ -360,7 +296,7 @@ Download the following fonts and install on your machine:
 :information_source: If using Ubuntu as the SSH client, follow [these instructions](#adding-an-ssh-key) to add the SSH key to the SSH agent in order to connect to the remote machine.
 
 
-# Adding an SSH key
+# Adding an existing SSH key
 > <em>Ubuntu</em>
 
 
@@ -392,7 +328,7 @@ sudo chmod 600 $HOME/.ssh/id_rsa.pub
 Install the keychain dependency, which starts the SSH agent automatically on login
 
 ```bash
-sudo apt-get update && sudo apt-get upgrade
+sudo apt-get update -y && sudo apt-get upgrade -y
 sudo apt-get install keychain -y
 cat <<"EOT" > $HOME/.bash_profile
 eval `keychain --eval --agents ssh id_rsa`
@@ -405,6 +341,64 @@ fi
 EOT
 . $HOME/.bash_profile
 ```
+
+Confirm the SSH agent is running and key is added
+```bash
+ssh-add -l
+```
+should give an output like so:
+> <em>4096 SHA256:aaaaAAAAAAAAaaaaAAAAAAAAaa /home/$user/.ssh/id_rsa (RSA)</em>
+
+# Creating an SSH key
+> <em>Ubuntu</em>
+
+
+Create the .ssh directory and assign correct permissions
+```bash
+mkdir -p $HOME/.ssh
+sudo chmod 700 $HOME/.ssh
+```
+
+Generate a new RSA key that can be used for SSH authentication </br>
+:information_source: Notice the key is being generated with a comment of <em>dev1</em>, the comment appears at the end of the public key signature and has no impact on the key therefore feel free to replace for a more suitable comment </br>
+:warning: It's important to avoid generating an <em>ed_25519</em> key as it is currently not supported by the Azure SSH key resource (2023-09-12) </br>
+
+```bash
+ssh-keygen -m PEM -t rsa -b 4096 -C "dev1"
+```
+When presented with this prompt, type Enter to save to the default location
+> Enter file in which to save the key (/home/user/.ssh/id_rsa):
+
+Assign the correct permissions to the SSH keys
+
+```bash
+sudo chmod 600 $HOME/.ssh/id_rsa
+sudo chmod 600 $HOME/.ssh/id_rsa.pub
+```
+Install the keychain dependency, which starts the SSH agent automatically on login
+
+```bash
+sudo apt-get update -y && sudo apt-get upgrade -y
+sudo apt-get install keychain -y
+cat <<"EOT" > $HOME/.bash_profile
+eval `keychain --eval --agents ssh id_rsa`
+if [ -n "$BASH_VERSION" ]; then
+    # include .bashrc if it exists
+    if [ -f "$HOME/.bashrc" ]; then
+        . "$HOME/.bashrc"
+    fi
+fi
+EOT
+. $HOME/.bash_profile
+```
+
+Confirm the SSH agent is running and key is added
+```bash
+ssh-add -l
+```
+should give an output like so:
+> <em>4096 SHA256:aaaaAAAAAAAAaaaaAAAAAAAAaa /home/$user/.ssh/id_rsa (RSA)</em>
+
 
 # Known Issues
 
