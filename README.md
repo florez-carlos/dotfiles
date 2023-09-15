@@ -213,7 +213,7 @@ cp <path/to/private/ssh/key> $HOME/.ssh/id_rsa
 cp <path/to/public/ssh/key> $HOME/.ssh/id_rsa.pub
 ```
 
-Assign the correct permissions to the SSH keys
+Assign the correct permissions to the SSH files
 
 ```bash
 sudo chmod 600 $HOME/.ssh/id_rsa
@@ -264,7 +264,7 @@ ssh-keygen -m PEM -t rsa -b 4096 -C "dev1"
 When presented with this prompt, type Enter to save to the default location
 > Enter file in which to save the key (/home/user/.ssh/id_rsa):
 
-Assign the correct permissions to the SSH keys
+Assign the correct permissions to the SSH files
 
 ```bash
 sudo chmod 600 $HOME/.ssh/id_rsa
@@ -294,6 +294,51 @@ ssh-add -l
 should give an output like so:
 > <em>4096 SHA256:aaaaAAAAAAAAaaaaAAAAAAAAaa /home/$user/.ssh/id_rsa (RSA)</em>
 
+# Adding an existing GPG key
+> <em>Ubuntu</em>
+
+Create the .gnupg directory
+
+:warning: It's assumed name of the files are <em>public.pem</em> and <em>private.pem</em> </br>
+
+```bash
+mkdir -p $HOME/.gnupg
+```
+
+Place the keys into the .gnupg directory </br>
+:warning: Replace the path in brackets with the path to the existing SSH key
+```bash
+# This example assumes the key already exists somewhere in the same machine
+cp <path/to/gpg_pub/key> $HOME/.gnupg/public.pem
+cp <path/to/gpg_priv/key> $HOME/.gnupg/private.pem
+```
+
+Assign the correct permissions to the files
+
+```bash
+sudo chmod 600 $HOME/.gnupg/private.pem
+sudo chmod 600 $HOME/.gnupg/public.pem
+```
+
+Add the key to GPG agent
+```bash
+gpg --import $HOME/.gnupg/private.pem
+```
+Confirm the agent is running and key is added
+```bash
+gpg --list-keys
+```
+should give output like so
+> /home/user/.gnupg/pubring.kbx </br>
+> ================================== </br>
+> pub   rsa4096 2022-09-29 [SC] [expires: 2023-09-29] </br>
+>       333789457489594958AAAAA23483AABBBBCC </br>
+> uid           [ unknown] Full Name <email@email.com> </br>
+> sub   rsa4096 2022-09-29 [E] [expires: 2023-09-29] </br>
+
+# Creating a GPG key
+> <em>Ubuntu</em> </br>
+For instructions on generating a [GPG key](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key)
 
 # Known Issues
 
