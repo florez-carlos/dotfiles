@@ -10,6 +10,7 @@ A containerized development environment with essential tools and packages
     * [SSH Key](#ssh-key)
     * [GPG Key](#gpg-key)
   * [Create the workspace dir and clone the repo with recurse submodules](#create-the-workspace-dir-and-clone-the-repo-with-recurse-submodules)
+  * [Add Azure Service Principal Certficate](#add-azure-service-principal-certificate)
   * [Install required dependencies on the host machine](#install-required-dependencies-on-the-host-machine)
   * [Export required env variables to bashrc](#export-required-env-variables-to-bashrc)
   * [Set pinentry-mode in gpg conf file](#set-pinentry-mode-in-gpg-conf-file)
@@ -67,6 +68,16 @@ cd $HOME/workspace
 git clone --recurse-submodules -j8 git@github.com:florez-carlos/dotfiles.git
 cd dotfiles
 ```
+## Add Azure Service Principal Certificate
+
+This certificate is used to authenticate against Azure, allowing for programmatic access of Azure resources </br>
+Add the certificate in PEM format to the workspace directory, the certificate must hold both private key/public certificate </br>
+:warning: Replace the path in brackets with the path to the existing certificate
+```bash
+#This example assumes the certificate is already present in the same machine
+cp </path/to/az/certificate> $HOME/workspace/terminal-auth-cert.pem
+```
+:information_source: Some repositories need programatic access to Azure in order to access files that may be outside of Git Version Control
 
 ## Install required dependencies on the host machine
 
@@ -82,10 +93,6 @@ Log out and log back in for group changes to take effect </br>
 ```bash
 sudo pkill -u $USER
 ```
-
-
-
-
 
 ## Export required env variables to bashrc
 
