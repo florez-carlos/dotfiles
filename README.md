@@ -40,7 +40,7 @@ These dependencies are required to clone the repo and invoke the Makefile target
 
 ```bash
 sudo apt-get update -y && sudo apt-get upgrade -y
-sudo apt-get install git make ca-certificates curl gnupg apt-transport-https lsb-release -y
+sudo apt-get install git make -y
 ```
 
 ## Add SSH and GPG keys
