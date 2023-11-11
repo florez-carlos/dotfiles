@@ -15,4 +15,3 @@ docker-buildx-plugin=0
 docker-compose-plugin=0
 kubectl=0
 nginx=0
-azure-cli=0

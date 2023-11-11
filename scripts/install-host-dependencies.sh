@@ -18,15 +18,12 @@ add_trusted_keys() {
     curl -fsSL https://nginx.org/keys/nginx_signing.key | gpg --batch --yes --dearmor -o /etc/apt/keyrings/nginx-apt-keyring.gpg >/dev/null
     curl -fsSL https://pkgs.k8s.io/core:/stable:/${kubectl_version}/deb/Release.key | gpg --batch --yes --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg >/dev/null
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --batch --yes --dearmor -o /etc/apt/keyrings/docker.gpg >/dev/null
-    curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --batch --yes --dearmor -o /etc/apt/keyrings/microsoft.gpg >/dev/null
 
     echo "deb [arch=${arch} signed-by=/etc/apt/keyrings/nginx-apt-keyring.gpg] http://nginx.org/packages/mainline/${os_name} ${os_version_codename} nginx" | tee /etc/apt/sources.list.d/nginx.list >/dev/null
 
     echo "deb [arch=${arch} signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/${kubectl_version}/deb/ /" | tee /etc/apt/sources.list.d/kubernetes.list >/dev/null
 
     echo "deb [arch=${arch} signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu ${os_version_codename} stable" | tee /etc/apt/sources.list.d/docker.list >/dev/null
-
-    echo "deb [arch=${arch} signed-by=/etc/apt/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/azure-cli/ ${os_version_codename} main" | tee /etc/apt/sources.list.d/azure-cli.list >/dev/null
 
 }
 
