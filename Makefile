@@ -2,7 +2,7 @@ export MODULE_HOME := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 SCRIPTS_DIR := $(MODULE_HOME)/scripts
 export DOT_HOME_CONFIG := $(MODULE_HOME)/config
 INSTALL_HOST_DEPENDENCIES := $(SCRIPTS_DIR)/install-host-dependencies.sh
-INSTALL_HOST_DEPENDENCIES_WSL2 := $(SCRIPTS_DIR)/install-host-dependencies-wsl2.sh
+ENABLE_UFW := $(SCRIPTS_DIR)/enable-ufw.sh
 export UID := $(shell id -u)
 export GID := $(shell id -g)
 export GROUP := $(shell id -gn)
@@ -10,13 +10,15 @@ export GPG_TTY := $(shell tty)
 export IMAGE_VERSION := 2.0.0
 PASSWORD ?= $(shell bash -c 'read -r -s -p "Enter the Unix password to use inside the container: " pwd; echo $$pwd')
 
-.PHONY: install build run exec trash start reload
+.PHONY: install enable-ufw build run exec trash start reload
 
 install:
 	@$(INSTALL_HOST_DEPENDENCIES)
+	adduser $(USER) docker
+	systemctl start nginx
 
-install-wsl2:
-	@$(INSTALL_HOST_DEPENDENCIES_WSL2)
+enable-ufw:
+	@$(ENABLE_UFW)
 
 # BUILDKIT instruction is required to use the secret flag
 build:
