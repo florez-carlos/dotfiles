@@ -188,7 +188,7 @@ make trash
 
 ---
 
-# Configure a remote SSH client (Optional)
+# Configure a remote SSH client (optional)
 
 You only need to do this if connecting remotely from a different device
 
