@@ -204,7 +204,7 @@ Download the following fonts and install on your machine:
 
 ### Add SSH key
 
-> :information_source: If using Ubuntu as the SSH client, follow [these instructions](#adding-an-ssh-key) to add the SSH key to the SSH agent in order to connect to the remote machine.
+> :information_source: If using Ubuntu as the SSH client, follow [these instructions](#adding-an-existing-ssh-key) to add the SSH key to the SSH agent in order to connect to the remote machine.
 
 
 # Adding an existing SSH key
