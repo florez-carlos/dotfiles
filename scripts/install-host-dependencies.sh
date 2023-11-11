@@ -5,6 +5,31 @@ color_green=$(tput setaf 2)
 color_yellow=$(tput setaf 3)
 color_normal=$(tput sgr0)
 
+#Some dependencies require trusted keys
+add_trusted_keys() {
+
+    arch=$(dpkg --print-architecture)
+    os_name=$(. /etc/os-release && echo "$ID") 
+    os_version_codename=$(. /etc/os-release && echo "$VERSION_CODENAME")
+    kubectl_version=v1.28
+    mkdir -p /etc/apt/keyrings
+    chmod 755 /etc/apt/keyrings
+
+    curl -fsSL https://nginx.org/keys/nginx_signing.key | gpg --batch --yes --dearmor -o /etc/apt/keyrings/nginx-apt-keyring.gpg >/dev/null
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/${kubectl_version}/deb/Release.key | gpg --batch --yes --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg >/dev/null
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --batch --yes --dearmor -o /etc/apt/keyrings/docker.gpg >/dev/null
+    curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --batch --yes --dearmor -o /etc/apt/keyrings/microsoft.gpg >/dev/null
+
+    echo "deb [arch=${arch} signed-by=/etc/apt/keyrings/nginx-apt-keyring.gpg] http://nginx.org/packages/mainline/${os_name} ${os_version_codename} nginx" | tee /etc/apt/sources.list.d/nginx.list >/dev/null
+
+    echo "deb [arch=${arch} signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/${kubectl_version}/deb/ /" | tee /etc/apt/sources.list.d/kubernetes.list >/dev/null
+
+    echo "deb [arch=${arch} signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu ${os_version_codename} stable" | tee /etc/apt/sources.list.d/docker.list >/dev/null
+
+    echo "deb [arch=${arch} signed-by=/etc/apt/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/azure-cli/ ${os_version_codename} main" | tee /etc/apt/sources.list.d/azure-cli.list >/dev/null
+
+}
+
 update() {
 
     printf "%s\n" ""
@@ -21,7 +46,8 @@ update() {
     
 }
 
-get_dependencies() {
+get_apt_dependencies() {
+
     dependencies_file="${DOT_HOME_CONFIG}/host-dependencies.txt"
     all_dependencies_count=0
     dependencies_failures_count=0
@@ -35,7 +61,6 @@ get_dependencies() {
     while IFS='=' read -r dependency min_version
     do
         
-        ((++all_dependencies_count))
         printf "%s" " -> Installing $dependency: "
         
         apt-get install "$dependency" -y &> /dev/null
@@ -44,48 +69,25 @@ get_dependencies() {
         if [ $? -eq 0 ]
         then
 
-            printf "%s\n" "${color_green}SUCCESS${color_normal}"
+            printf "%s\n" "${color_green}INSTALLED${color_normal}"
 
         else
 
-            ((++dependencies_failures_count))
             printf "%s\n" "${color_red}FAILED${color_normal}"
+            printf "%s\n" "${color_red}A dependency has failed installation, aborting${color_normal}"
+            exit 1
 
         fi
     done < "$dependencies_file"
 
+    printf "%s\n" ""
+    printf "%s\n" "${color_green}SUCCESS${color_normal}: All dependencies have been installed"
+    sleep 1
 
-    if [ $dependencies_failures_count -eq 0 ]
-    then
-        
-        printf "%s\n" ""
-        printf "%s\n" "${color_green}SUCCESS${color_normal}: All dependencies have been installed successfully"
-
-    elif [ $all_dependencies_count -eq 0 ]
-    then
-        
-        printf "%s\n" "${color_yellow}WARNING${color_normal}: No dependencies have been installed"
-        exit 1
-
-    elif  [ $dependencies_failures_count -gt 0 ] && [ $dependencies_failures_count -eq $all_dependencies_count ]
-    then
-        
-        printf "%s\n" "${color_red}ERROR${color_normal}: All dependencies have failed installation!"
-        exit 1
-
-    elif [ $dependencies_failures_count -gt 0 ] && [ $dependencies_failures_count -ne $all_dependencies_count ]
-    then
-
-        printf "%s\n" "${color_yellow}WARNING${color_normal}: Some dependencies have failed installation"
-        exit 1
-
-    fi
-
-    return 1
  
 }
 
-check_dependencies() {
+check_apt_dependencies() {
     
     dependencies_file="${DOT_HOME_CONFIG}/host-dependencies.txt"
     
@@ -105,7 +107,7 @@ check_dependencies() {
             printf "%s\n" "$dependency - $installed_version: ${color_red}FAIL${color_normal}"
             printf "%s\n" ""
             printf "%s\n" "${color_red}ERROR${color_normal}: $dependency installed version: $installed_version but minimum required: $min_version"
-            printf "%s\n" "Proceed with manual installation of $dependency - $min_version or larger and rerun this script"
+            printf "%s\n" "Proceed with manual installation of $dependency - $min_version or larger"
             exit 1;
 
         else
@@ -137,62 +139,52 @@ copy_fonts() {
 
 }
 
-install_docker() {
-
-
-	mkdir -p /etc/apt/keyrings
-	curl -fsSL https://download.docker.com/linux/ubuntu/gpg |sudo -H gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-	echo \ "deb [arch=$(dpkg --print-architecture) \
-	signed-by=/etc/apt/keyrings/docker.gpg] \
-	https://download.docker.com/linux/ubuntu \
-  	$(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
-	apt-get update -y
-	apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
-	docker run hello-world
-	#groupadd docker
-	adduser ${USER} docker
-
-}
-
-install_kubectl() {
-
-    printf "%s\n" ""
-    printf "%s\n" " -> Beginning add kubectl ppa: "
-    printf "%s\n" ""
-    sleep 1
-
-    curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
-    echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | tee /etc/apt/sources.list.d/kubernetes.list
-    apt-get update
-    apt-get install kubectl -y
-
-}
-
+#This has special installation steps
 install_minikube() {
 
     printf "%s\n" ""
-    printf "%s\n" " -> Beginning add minikube: "
+    printf "%s\n" " -> Beginning special installation -> minikube: "
     printf "%s\n" ""
     sleep 1
 
     curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb
     dpkg -i minikube_latest_amd64.deb
-
+    #Check that it's been installed
+    is_installed minikube
+    rm -f minikube_latest_amd64.deb
 
 }
+
+#This uses dpkg to check a dependency is installed, it does not make version checks, reference check_dependencies() for that
+#A dependency compiled from source might not be listed by dpkg, in such cases this procedure wouldn't work
+is_installed() {
+
+    if ! dpkg -l $1 > /dev/null
+    then
+        printf "%s\n" "$1: ${color_red}FAIL${color_normal}"
+        printf "%s\n" ""
+        printf "%s\n" "${color_red}ERROR${color_normal}:  $1: Could not be installed"
+        exit 1;
+    fi
+
+    printf "%s\n" "$1: ${color_green}PASS${color_normal}"
+
+}
+
 
 if [[ $UID != 0 ]]; then
     printf "%s\n" "${color_red}ERROR:${color_normal}Please run this script with sudo"
     exit 1
 fi
 
+
+add_trusted_keys
 update
-get_dependencies
-check_dependencies
-copy_fonts
-install_docker
-install_kubectl
+get_apt_dependencies
+check_apt_dependencies
 install_minikube
+copy_fonts
+
 printf "%s\n" ""
 printf "%s\n" "${color_green}SUCCESS${color_normal}: Installation complete!"
 printf "%s\n" ""
