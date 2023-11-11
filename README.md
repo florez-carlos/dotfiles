@@ -16,6 +16,7 @@ A containerized development environment with essential tools and packages
   * [Set pinentry-mode in gpg conf file](#set-pinentry-mode-in-gpg-conf-file)
   * [Login to the Github container registry to gain access to the base image](#login-to-the-github-container-registry-to-gain-access-to-the-base-image)
   * [Build the Image](#build-the-image)
+  * [Enable UFW Ports (optional)](#enable-ufw-ports-optional)
 * [Using Dotfiles](#using-dotfiles)
 * [Configure a Remote SSH Client (optional)](#configure-a-remote-ssh-client-optional)
 * [Adding an existing SSH key](#adding-an-existing-ssh-key)
@@ -27,11 +28,11 @@ A containerized development environment with essential tools and packages
 
 # Installation
 
-:information_source: Supported Distros: <br>
+> :information_source: Supported Distros: <br>
 
  - Ubuntu 20.04 or above
 
-:information_source: If using a remote SSH client to connect to the host machine, make sure to [follow these instructions](#configure-a-remote-ssh-client-optional) to set up the remote SSH client
+> :information_source: If using a remote SSH client to connect to the host machine, make sure to [follow these instructions](#configure-a-remote-ssh-client-optional) to set up the remote SSH client
 
 
 ## Install basic dependencies
@@ -50,12 +51,12 @@ These are necessary for repository authentication and commit signing
 ### SSH key
 
 Follow the instructions to [add an existing SSH key](#adding-an-existing-ssh-key) </br>
-:information_source:If you don't have an existing SSH key, follow these instructions to [create an SSH key](#creating-an-ssh-key)
+> :information_source:If you don't have an existing SSH key, follow these instructions to [create an SSH key](#creating-an-ssh-key)
 
 ### GPG key
 
 Follow the instructions to [add an existing GPG key](#adding-an-existing-gpg-key) </br>
-:information_source: If you don't have an existing GPG key, follow these instructions to [create a GPG key](#creating-a-gpg-key)
+> :information_source: If you don't have an existing GPG key, follow these instructions to [create a GPG key](#creating-a-gpg-key)
 
 ## Create the workspace dir and clone the repo with recurse submodules
 
@@ -72,19 +73,19 @@ cd dotfiles
 
 This certificate is used to authenticate against Azure, allowing for programmatic access of Azure resources </br>
 Add the certificate in PEM format to the workspace directory, the certificate must hold both private key/public certificate </br>
-:warning: Replace the path in brackets with the path to the existing certificate
+> :warning: Replace the path in brackets with the path to the existing certificate
 ```bash
 #This example assumes the certificate is already present in the same machine
 cp </path/to/az/certificate> $HOME/workspace/terminal-auth-cert.pem
 ```
-:information_source: Some repositories need programatic access to Azure in order to access files that may be outside of Git Version Control
+> :information_source: Some repositories need programatic access to Azure in order to access files that may be outside of Git Version Control
 
 ## Install required dependencies on the host machine
 
 These dependencies are directly installed to the host machine
 
 Run the install target. <br>
-:information_source: This will install Docker and MesloLGS fonts on the host machine
+> :information_source: This will install the following to the host machine: MesloLGS, Minikube and the dependencies listed on [host dependencies file](config/host-dependencies.txt) 
 
 ```bash
 sudo make install -e USER=$USER -e HOME=$HOME
@@ -98,14 +99,14 @@ sudo pkill -u $USER
 
 These are necessary to build your git config file, some are required at container build time and others are <br>
 required at container runtime, therefore it's recommended to keep these env variables in your .bashrc <br>
-:exclamation: **Make sure to replace the variables in brackets with the relevant credentials.** <br>
+> :exclamation: **Make sure to replace the variables in brackets with the relevant credentials.** <br>
 > :warning: **if the value contains empty space, wrap the entire value in single quotes 'like this'**
 
 ```bash
 cat <<EOT >> $HOME/.bashrc
 export GIT_USER_NAME=<Git name, not the username but the name>
 export GIT_USER_USERNAME=<Git username, not the name but the username>
-export GIT_USER_SIGNINGKEY=<gpg public key id}
+export GIT_USER_SIGNINGKEY=<gpg public key id>
 export GIT_USER_EMAIL=<example@example.com>
 export AZ_LOGIN_APP_ID=<Azure login service principal app id>
 export AZ_LOGIN_TENANT_ID=<Azure login service principal tenant id>
@@ -114,8 +115,6 @@ export AZ_LOGIN_VAULT_NAME=<Azure login service principal vault name>
 EOT
 . $HOME/.bashrc
 ```
-
----
 
 ## Set pinentry-mode in gpg conf file
 
@@ -128,7 +127,6 @@ EOT
 ```
 
 ## Login to the Github container registry to gain access to the base image
-> <em>(Ubuntu & WSL2)</em>
 
 This is required to build the image. <br>
 
@@ -145,10 +143,18 @@ echo $GIT_PAT | docker login ghcr.io -u $GIT_USER_USERNAME --password-stdin
 ```
 
 ## Build the image
-> <em>(Ubuntu & WSL2)</em>
 
 ```bash
 make build
+```
+
+## Enable UFW ports (optional)
+
+This is only required if using a remote SSH client
+> :warning: This will enable ports 22,80,443 on the host machine
+
+```bash
+make enable-ufw
 ```
 
 ---
@@ -159,24 +165,28 @@ make build
 cd $HOME/workspace/dotfiles
 ```
 
-To start Dotfiles:
+To start the container:
 ```bash
 make start
 ```
 
-To trash the current instance of Dotfiles and start a new one:<br />
-> :warning: **Remember, only contents inside the ~/workspace dir will be persisted across shutdowns**
+To reenter a running container:
 ```bash
-exit
+make hook
 ```
+
+To trash the current instance of the container and start a new one:<br />
+> :warning: **Remember, only contents inside the ~/workspace dir will be persisted across shutdowns**
 ```bash
 make reload
 ```
 
-To only trash Dotfiles and not start a new one:
+To only trash the container and not start a new one:
 ```bash
 make trash
 ```
+
+---
 
 # Configure a remote SSH client (Optional)
 
@@ -190,18 +200,18 @@ Download the following fonts and install on your machine:
  * [Italic](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Italic.ttf)
  * [Regular](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Regular.ttf)
 
-:warning: After installing the fonts you might have to manually set them on the terminal preferences/settings
+> :warning: After installing the fonts you might have to manually set them on the terminal preferences/settings
 
 ### Add SSH key
 
-:information_source: If using Ubuntu as the SSH client, follow [these instructions](#adding-an-ssh-key) to add the SSH key to the SSH agent in order to connect to the remote machine.
+> :information_source: If using Ubuntu as the SSH client, follow [these instructions](#adding-an-ssh-key) to add the SSH key to the SSH agent in order to connect to the remote machine.
 
 
 # Adding an existing SSH key
 > <em>Ubuntu</em>
 
 
-:warning: It's assumed name of the key is <em>id_rsa</em> </br>
+> :warning: It's assumed name of the key is <em>id_rsa</em> </br>
 
 Create the .ssh directory and assign correct permissions
 
@@ -211,7 +221,7 @@ sudo chmod 700 $HOME/.ssh
 ```
 
 Place the keys into the .ssh directory </br>
-:warning: Replace the path in brackets with the path to the existing SSH key
+> :warning: Replace the path in brackets with the path to the existing SSH key
 
 ```bash
 # This example assumes the key already exists somewhere in the same machine
@@ -261,8 +271,8 @@ sudo chmod 700 $HOME/.ssh
 ```
 
 Generate a new RSA key that can be used for SSH authentication </br>
-:information_source: Notice the key is being generated with a comment of <em>dev1</em>, the comment appears at the end of the public key signature and has no impact on the key therefore feel free to replace for a more suitable comment </br>
-:warning: It's important to avoid generating an <em>ed_25519</em> key as it is currently not supported by the Azure SSH key resource (2023-09-12) </br>
+> :information_source: Notice the key is being generated with a comment of <em>dev1</em>, the comment appears at the end of the public key signature and has no impact on the key therefore feel free to replace for a more suitable comment </br>
+> :warning: It's important to avoid generating an <em>ed_25519</em> key as it is currently not supported by the Azure SSH key resource (2023-09-12) </br>
 
 ```bash
 ssh-keygen -m PEM -t rsa -b 4096 -C "dev1"
@@ -305,14 +315,14 @@ should give an output like so:
 
 Create the .gnupg directory
 
-:warning: It's assumed name of the files are <em>public.pem</em> and <em>private.pem</em> </br>
+> :warning: It's assumed name of the files are <em>public.pem</em> and <em>private.pem</em> </br>
 
 ```bash
 mkdir -p $HOME/.gnupg
 ```
 
 Place the keys into the .gnupg directory </br>
-:warning: Replace the path in brackets with the path to the existing SSH key
+> :warning: Replace the path in brackets with the path to the existing SSH key
 ```bash
 # This example assumes the key already exists somewhere in the same machine
 cp <path/to/gpg_pub/key> $HOME/.gnupg/public.pem
