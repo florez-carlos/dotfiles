@@ -319,6 +319,7 @@ Create the .gnupg directory
 
 ```bash
 mkdir -p $HOME/.gnupg
+sudo chmod 700 $HOME/.gnupg
 ```
 
 Place the keys into the .gnupg directory </br>
