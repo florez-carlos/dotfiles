@@ -127,10 +127,10 @@ copy_fonts() {
 	printf "%s\n" ""
 	sleep 1
 	mkdir -p ${HOME}/.local/share/fonts
-	cp ${MODULE_HOME}/lib/powerlevel10k-media/'MesloLGS NF Bold Italic.ttf' ${HOME}/.local/share/fonts/
-	cp ${MODULE_HOME}/lib/powerlevel10k-media/'MesloLGS NF Bold.ttf' ${HOME}/.local/share/fonts/
-	cp ${MODULE_HOME}/lib/powerlevel10k-media/'MesloLGS NF Italic.ttf' ${HOME}/.local/share/fonts/
-	cp ${MODULE_HOME}/lib/powerlevel10k-media/'MesloLGS NF Regular.ttf' ${HOME}/.local/share/fonts/
+	cp ${MODULE_HOME}/lib/'MesloLGS NF Bold Italic.ttf' ${HOME}/.local/share/fonts/
+	cp ${MODULE_HOME}/lib/'MesloLGS NF Bold.ttf' ${HOME}/.local/share/fonts/
+	cp ${MODULE_HOME}/lib/'MesloLGS NF Italic.ttf' ${HOME}/.local/share/fonts/
+	cp ${MODULE_HOME}/lib/'MesloLGS NF Regular.ttf' ${HOME}/.local/share/fonts/
 	chown -R ${USER}:${USER} ${HOME}/.local/share/fonts
 	fc-cache -f -v
 
