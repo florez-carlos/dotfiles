@@ -41,7 +41,7 @@ These dependencies are required to clone the repo and invoke the Makefile target
 
 ```bash
 sudo apt-get update -y && sudo apt-get upgrade -y
-sudo apt-get install git make -y
+sudo apt-get install git make curl -y
 ```
 
 ## Add SSH and GPG keys
