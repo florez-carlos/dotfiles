@@ -16,6 +16,7 @@ A containerized development environment with essential tools and packages
   * [Set pinentry-mode in gpg conf file](#set-pinentry-mode-in-gpg-conf-file)
   * [Login to the Github container registry to gain access to the base image](#login-to-the-github-container-registry-to-gain-access-to-the-base-image)
   * [Build the Image](#build-the-image)
+  * [Manually set font in terminal preferences](#manually-set-font-in-terminal-preferences)
   * [Enable UFW Ports (optional)](#enable-ufw-ports-optional)
 * [Using Dotfiles](#using-dotfiles)
 * [Configure a Remote SSH Client (optional)](#configure-a-remote-ssh-client-optional)
@@ -148,6 +149,10 @@ echo $GIT_PAT | docker login ghcr.io -u $GIT_USER_USERNAME --password-stdin
 cd $HOME/workspace/dotfiles
 make build
 ```
+
+## Manually set font in terminal preferences
+
+Set the font to 'MesloLGS' is terminal preferences.
 
 ## Enable UFW ports (optional)
 
