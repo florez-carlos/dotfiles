@@ -145,6 +145,7 @@ echo $GIT_PAT | docker login ghcr.io -u $GIT_USER_USERNAME --password-stdin
 ## Build the image
 
 ```bash
+cd $HOME/workspace/dotfiles
 make build
 ```
 
