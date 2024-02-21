@@ -7,7 +7,6 @@ lsb-release=0
 fontconfig=0
 apt-transport-https=0
 jq=0
-docker=0
 docker-ce=0
 docker-ce-cli=0
 containerd.io=0
