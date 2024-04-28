@@ -29,11 +29,12 @@ A containerized development environment with essential tools and packages
 
 # Installation
 
-> :information_source: Supported Distros: <br>
+Supported Distros:
 
- - Ubuntu 20.04 or above
+ - Ubuntu 20.04+
 
-> :information_source: If using a remote SSH client to connect to the host machine, make sure to [follow these instructions](#configure-a-remote-ssh-client-optional) to set up the remote SSH client
+> [!NOTE]
+> If using a remote SSH client to connect to the host machine, make sure to [follow these instructions](#configure-a-remote-ssh-client-optional) to set up the remote SSH client
 
 
 ## Install basic dependencies
@@ -52,12 +53,14 @@ These are necessary for repository authentication and commit signing
 ### SSH key
 
 Follow the instructions to [add an existing SSH key](#adding-an-existing-ssh-key) </br>
-> :information_source:If you don't have an existing SSH key, follow these instructions to [create an SSH key](#creating-an-ssh-key)
+> [!NOTE]
+> If you don't have an existing SSH key, follow these instructions to [create an SSH key](#creating-an-ssh-key)
 
 ### GPG key
 
 Follow the instructions to [add an existing GPG key](#adding-an-existing-gpg-key) </br>
-> :information_source: If you don't have an existing GPG key, follow these instructions to [create a GPG key](#creating-a-gpg-key)
+> [!NOTE]
+> If you don't have an existing GPG key, follow these instructions to [create a GPG key](#creating-a-gpg-key)
 
 ## Create the workspace dir and clone the repo with recurse submodules
 
@@ -74,19 +77,22 @@ cd dotfiles
 
 This certificate is used to authenticate against Azure, allowing for programmatic access of Azure resources </br>
 Add the certificate in PEM format to the workspace directory, the certificate must hold both private key/public certificate </br>
+> [!NOTE]
 > :warning: Replace the path in brackets with the path to the existing certificate
 ```bash
 #This example assumes the certificate is already present in the same machine
 cp </path/to/az/certificate> $HOME/workspace/terminal-auth-cert.pem
 ```
-> :information_source: Some repositories need programatic access to Azure in order to access files that may be outside of Git Version Control
+> [!NOTE]
+> Some repositories need programatic access to Azure in order to access files that may be outside of Git Version Control
 
 ## Install required dependencies on the host machine
 
 These dependencies are directly installed to the host machine
 
 Run the install target. <br>
-> :information_source: This will install the following to the host machine: MesloLGS, Minikube and the dependencies listed on [host dependencies file](config/host-dependencies.txt) 
+> [!NOTE]
+> This will install the following to the host machine: MesloLGS, Minikube and the dependencies listed on [host dependencies file](config/host-dependencies.txt) 
 
 ```bash
 sudo make install -e USER=$USER -e HOME=$HOME
@@ -100,6 +106,7 @@ sudo pkill -u $USER
 
 These are necessary to build your git config file, some are required at container build time and others are <br>
 required at container runtime, therefore it's recommended to keep these env variables in your .bashrc <br>
+> [!NOTE]
 > :exclamation: **Make sure to replace the variables in brackets with the relevant credentials.** <br>
 > :warning: **if the value contains empty space, wrap the entire value in single quotes 'like this'**
 
@@ -152,11 +159,12 @@ make build
 
 ## Manually set font in terminal preferences
 
-Set the font to 'MesloLGS' is terminal preferences.
+Set the font to 'MesloLGS' is terminal preferences and restart the terminal.
 
 ## Enable UFW ports (optional)
 
 This is only required if using a remote SSH client
+> [!NOTE]
 > :warning: This will enable ports 22,80,443 on the host machine
 
 ```bash
@@ -182,6 +190,7 @@ make hook
 ```
 
 To trash the current instance of the container and start a new one:<br />
+> [!NOTE]
 > :warning: **Remember, only contents inside the ~/workspace dir will be persisted across shutdowns**
 ```bash
 make reload
@@ -206,17 +215,18 @@ Download the following fonts and install on your machine:
  * [Italic](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Italic.ttf)
  * [Regular](https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Regular.ttf)
 
+> [!NOTE]
 > :warning: After installing the fonts you might have to manually set them on the terminal preferences/settings
 
 ### Add SSH key
 
-> :information_source: If using Ubuntu as the SSH client, follow [these instructions](#adding-an-existing-ssh-key) to add the SSH key to the SSH agent in order to connect to the remote machine.
+> [!NOTE]
+> If using Ubuntu as the SSH client, follow [these instructions](#adding-an-existing-ssh-key) to add the SSH key to the SSH agent in order to connect to the remote machine.
 
 
 # Adding an existing SSH key
-> <em>Ubuntu</em>
 
-
+> [!NOTE]
 > :warning: It's assumed name of the key is <em>id_rsa</em> </br>
 
 Create the .ssh directory and assign correct permissions
@@ -227,6 +237,7 @@ sudo chmod 700 $HOME/.ssh
 ```
 
 Place the keys into the .ssh directory </br>
+> [!NOTE]
 > :warning: Replace the path in brackets with the path to the existing SSH key
 
 ```bash
@@ -267,8 +278,6 @@ should give an output like so:
 > <em>4096 SHA256:aaaaAAAAAAAAaaaaAAAAAAAAaa /home/$user/.ssh/id_rsa (RSA)</em>
 
 # Creating an SSH key
-> <em>Ubuntu</em>
-
 
 Create the .ssh directory and assign correct permissions
 ```bash
@@ -277,7 +286,8 @@ sudo chmod 700 $HOME/.ssh
 ```
 
 Generate a new RSA key that can be used for SSH authentication </br>
-> :information_source: Notice the key is being generated with a comment of <em>dev1</em>, the comment appears at the end of the public key signature and has no impact on the key therefore feel free to replace for a more suitable comment </br>
+> [!NOTE]
+> Notice the key is being generated with a comment of <em>dev1</em>, the comment appears at the end of the public key signature and has no impact on the key therefore feel free to replace for a more suitable comment </br>
 > :warning: It's important to avoid generating an <em>ed_25519</em> key as it is currently not supported by the Azure SSH key resource (2023-09-12) </br>
 
 ```bash
@@ -317,10 +327,10 @@ should give an output like so:
 > <em>4096 SHA256:aaaaAAAAAAAAaaaaAAAAAAAAaa /home/$user/.ssh/id_rsa (RSA)</em>
 
 # Adding an existing GPG key
-> <em>Ubuntu</em>
 
 Create the .gnupg directory
 
+> [!NOTE]
 > :warning: It's assumed name of the files are <em>public.pem</em> and <em>private.pem</em> </br>
 
 ```bash
@@ -329,6 +339,7 @@ sudo chmod 700 $HOME/.gnupg
 ```
 
 Place the keys into the .gnupg directory </br>
+> [!NOTE]
 > :warning: Replace the path in brackets with the path to the existing SSH key
 ```bash
 # This example assumes the key already exists somewhere in the same machine
@@ -360,7 +371,7 @@ should give output like so
 > sub   rsa4096 2022-09-29 [E] [expires: 2023-09-29] </br>
 
 # Creating a GPG key
-> <em>Ubuntu</em> </br>
+
 For instructions on generating a [GPG key](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key)
 
 # Known Issues
@@ -370,7 +381,6 @@ command when needing to delete a GPG key:
 ```bash
 gpg --batch --yes delete-keys
 ```
-TODO: git submodule update --remote --merge
 
 # License
 [MIT](https://choosealicense.com/licenses/mit/)
