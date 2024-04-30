@@ -126,7 +126,7 @@ return {\n\
 ' > $XDG_CONFIG_HOME/nvim/lua/plugins/nvim-jdtls.lua
 
 # Install pip dependencies
-RUN /usr/local/bin/python3.8 -m pip install --upgrade pip setuptools wheel pynvim
+RUN /usr/local/bin/python3.8 -m pip install --user --upgrade pip setuptools wheel pynvim
 RUN /usr/local/bin/python3.11 -m pip install --upgrade pip setuptools wheel pynvim
 
 
