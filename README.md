@@ -9,7 +9,7 @@ A containerized development environment with essential tools and packages
   * [Add SSH and GPG Keys](#add-ssh-and-gpg-keys)
     * [SSH Key](#ssh-key)
     * [GPG Key](#gpg-key)
-  * [Create the workspace dir and clone the repo with recurse submodules](#create-the-workspace-dir-and-clone-the-repo-with-recurse-submodules)
+  * [Create the workspace dir and clone the repo](#create-the-workspace-dir-and-clone-the-repo)
   * [Add Azure Service Principal Certficate](#add-azure-service-principal-certificate)
   * [Install required dependencies on the host machine](#install-required-dependencies-on-the-host-machine)
   * [Export required env variables to bashrc](#export-required-env-variables-to-bashrc)
@@ -62,7 +62,7 @@ Follow the instructions to [add an existing GPG key](#adding-an-existing-gpg-key
 > [!NOTE]
 > If you don't have an existing GPG key, follow these instructions to [create a GPG key](#creating-a-gpg-key)
 
-## Create the workspace dir and clone the repo with recurse submodules
+## Create the workspace dir and clone the repo
 
 The workspace directory is a [volume](https://docs.docker.com/storage/volumes/) in the Docker container, it's important to clone all the repos and do all the <br> 
 important work in this directory since it will be preserved between container shutdowns.
@@ -70,7 +70,7 @@ important work in this directory since it will be preserved between container sh
 ```bash
 mkdir -p $HOME/workspace 
 cd $HOME/workspace
-git clone --recurse-submodules -j8 git@github.com:florez-carlos/dotfiles.git
+git clone git@github.com:florez-carlos/dotfiles.git
 cd dotfiles
 ```
 ## Add Azure Service Principal Certificate
