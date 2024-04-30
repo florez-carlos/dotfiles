@@ -8,7 +8,7 @@ export GID := $(shell id -g)
 export GROUP := $(shell id -gn)
 export GPG_TTY := $(shell tty)
 export PYTHON_VERSION := 3.11
-export IMAGE_VERSION := 2.0.0
+export IMAGE_VERSION := 2.0.1
 PASSWORD ?= $(shell bash -c 'read -r -s -p "Enter the Unix password to use inside the container: " pwd; echo $$pwd')
 
 .PHONY: install enable-ufw build run exec trash start reload
