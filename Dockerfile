@@ -127,9 +127,9 @@ return {\n\
 
 # Install pip dependencies
 RUN /usr/local/bin/python3.8 -m pip install --user --upgrade pip
-RUN /usr/local/bin/python3.8 -m pip install --user setuptools wheel pynvim ruff
+RUN /usr/local/bin/python3.8 -m pip install --user setuptools wheel pynvim ruff build twine
 RUN /usr/local/bin/python3.11 -m pip install --upgrade pip
-RUN /usr/local/bin/python3.11 -m pip install setuptools wheel pynvim ruff
+RUN /usr/local/bin/python3.11 -m pip install setuptools wheel pynvim ruff build twine
 
 
 WORKDIR ${WORKSPACE}
