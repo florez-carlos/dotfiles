@@ -23,7 +23,8 @@ A containerized development environment with essential tools and packages
 * [Adding an existing SSH key](#adding-an-existing-ssh-key)
 * [Creating an SSH key](#creating-an-ssh-key)
 * [Adding an existing GPG key](#adding-an-existing-gpg-key)
-* [Creating-a-gpg-key](#creating-a-gpg-key)
+* [Creating a GPG key](#creating-a-gpg-key)
+* [Logging in to Azure](#logging-in-to-azure)
 * [Known Issues](#known-issues)
 
 
@@ -373,7 +374,11 @@ should give output like so
 # Creating a GPG key
 
 For instructions on generating a [GPG key](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key)
+# Logging in to Azure
 
+```bash
+az login --service-principal -u $AZ_LOGIN_APP_ID -p $AZ_LOGIN_CERT_PATH --tenant $AZ_LOGIN_TENANT_ID
+```
 # Known Issues
 
 The use of loopback pinentry provokes an error when attempting to delete a GPG key, to circumvent, use the following <br>
