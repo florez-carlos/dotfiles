@@ -11,7 +11,7 @@ ARG AZ_LOGIN_APP_ID=app_id
 ARG AZ_LOGIN_TENANT_ID=tenant_id
 ARG AZ_LOGIN_CERT_PATH=path
 ARG AZ_LOGIN_VAULT_NAME=vault_name
-ARG NVM_VERSION=v0.39.7
+ARG NVM_VERSION=v0.40.3
 
 #Static args (some of these are redefined by the Makefile)
 ARG USER=user
@@ -126,10 +126,10 @@ return {\n\
 ' > $XDG_CONFIG_HOME/nvim/lua/plugins/nvim-jdtls.lua
 
 # Install pip dependencies
-RUN /usr/local/bin/python3.8 -m pip install --user --upgrade pip
-RUN /usr/local/bin/python3.8 -m pip install --user setuptools wheel pynvim ruff build twine
 RUN /usr/local/bin/python3.11 -m pip install --upgrade pip
 RUN /usr/local/bin/python3.11 -m pip install setuptools wheel pynvim ruff build twine
+RUN /usr/local/bin/python3.12 -m pip install --upgrade pip
+RUN /usr/local/bin/python3.12 -m pip install setuptools wheel pynvim ruff build twine
 
 
 WORKDIR ${WORKSPACE}
