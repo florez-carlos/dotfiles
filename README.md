@@ -121,6 +121,10 @@ export AZ_LOGIN_APP_ID=<Azure login service principal app id>
 export AZ_LOGIN_TENANT_ID=<Azure login service principal tenant id>
 export AZ_LOGIN_CERT_PATH=<Azure login service principal certificate path>
 export AZ_LOGIN_VAULT_NAME=<Azure login service principal vault name>
+alias start='cd $HOME/workspace/dotfiles && make start'
+alias hook='cd $HOME/workspace/dotfiles && make hook'
+alias trash='cd $HOME/workspace/dotfiles && make trash'
+alias reload='cd $HOME/workspace/dotfiles && make trash && sleep 5 && make start'
 EOT
 . $HOME/.bashrc
 ```
@@ -175,10 +179,6 @@ make enable-ufw
 ---
 
 # Using Dotfiles
-
-```bash
-cd $HOME/workspace/dotfiles
-```
 
 To start the container:
 ```bash
