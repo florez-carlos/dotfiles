@@ -8,6 +8,7 @@ export GID := $(shell id -g)
 export GROUP := $(shell id -gn)
 export GPG_TTY := $(shell tty)
 export PYTHON_VERSION := 3.12
+export KUBECTL_VERSION := v1.33
 export IMAGE_VERSION := 2.1.0
 PASSWORD ?= $(shell bash -c 'read -r -s -p "Enter the Unix password to use inside the container: " pwd; echo $$pwd')
 

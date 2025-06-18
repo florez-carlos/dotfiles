@@ -11,17 +11,16 @@ add_trusted_keys() {
     arch=$(dpkg --print-architecture)
     os_name=$(. /etc/os-release && echo "$ID") 
     os_version_codename=$(. /etc/os-release && echo "$VERSION_CODENAME")
-    kubectl_version=v1.28
     mkdir -p /etc/apt/keyrings
     chmod 755 /etc/apt/keyrings
 
     curl -fsSL https://nginx.org/keys/nginx_signing.key | gpg --batch --yes --dearmor -o /etc/apt/keyrings/nginx-apt-keyring.gpg >/dev/null
-    curl -fsSL https://pkgs.k8s.io/core:/stable:/${kubectl_version}/deb/Release.key | gpg --batch --yes --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg >/dev/null
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/${KUBECTL_VERSION}/deb/Release.key | gpg --batch --yes --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg >/dev/null
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --batch --yes --dearmor -o /etc/apt/keyrings/docker.gpg >/dev/null
 
     echo "deb [arch=${arch} signed-by=/etc/apt/keyrings/nginx-apt-keyring.gpg] http://nginx.org/packages/mainline/${os_name} ${os_version_codename} nginx" | tee /etc/apt/sources.list.d/nginx.list >/dev/null
 
-    echo "deb [arch=${arch} signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/${kubectl_version}/deb/ /" | tee /etc/apt/sources.list.d/kubernetes.list >/dev/null
+    echo "deb [arch=${arch} signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/${KUBECTL_VERSION}/deb/ /" | tee /etc/apt/sources.list.d/kubernetes.list >/dev/null
 
     echo "deb [arch=${arch} signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu ${os_version_codename} stable" | tee /etc/apt/sources.list.d/docker.list >/dev/null
 
