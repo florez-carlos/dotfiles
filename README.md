@@ -32,7 +32,7 @@ A containerized development environment with essential tools and packages
 
 Supported Distros:
 
- - Ubuntu 20.04+
+ - Ubuntu 24.04+
 
 > [!NOTE]
 > If using a remote SSH client to connect to the host machine, make sure to [follow these instructions](#configure-a-remote-ssh-client-optional) to set up the remote SSH client
@@ -200,6 +200,13 @@ make reload
 To only trash the container and not start a new one:
 ```bash
 make trash
+```
+
+To update the host machine dependencies:<br />
+> [!NOTE]
+> Important to run this frequently in order to keep the host machine dependencies up-to-date
+```bash
+sudo make update-host
 ```
 
 ---

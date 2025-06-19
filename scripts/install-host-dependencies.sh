@@ -8,6 +8,18 @@ color_normal=$(tput sgr0)
 #Some dependencies require trusted keys
 add_trusted_keys() {
 
+    dependencies_file="${DOT_HOME_CONFIG}/host-dependencies.txt"
+    
+    while IFS='=' read -r dependency min_version
+    do
+
+        if [ "$dependency" == "kubectl" ]
+        then
+            kubectl_version="v$min_version"
+            break
+        fi
+    done < "$dependencies_file"
+
     arch=$(dpkg --print-architecture)
     os_name=$(. /etc/os-release && echo "$ID") 
     os_version_codename=$(. /etc/os-release && echo "$VERSION_CODENAME")
@@ -15,12 +27,12 @@ add_trusted_keys() {
     chmod 755 /etc/apt/keyrings
 
     curl -fsSL https://nginx.org/keys/nginx_signing.key | gpg --batch --yes --dearmor -o /etc/apt/keyrings/nginx-apt-keyring.gpg >/dev/null
-    curl -fsSL https://pkgs.k8s.io/core:/stable:/${KUBECTL_VERSION}/deb/Release.key | gpg --batch --yes --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg >/dev/null
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/${kubectl_version}/deb/Release.key | gpg --batch --yes --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg >/dev/null
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --batch --yes --dearmor -o /etc/apt/keyrings/docker.gpg >/dev/null
 
     echo "deb [arch=${arch} signed-by=/etc/apt/keyrings/nginx-apt-keyring.gpg] http://nginx.org/packages/mainline/${os_name} ${os_version_codename} nginx" | tee /etc/apt/sources.list.d/nginx.list >/dev/null
 
-    echo "deb [arch=${arch} signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/${KUBECTL_VERSION}/deb/ /" | tee /etc/apt/sources.list.d/kubernetes.list >/dev/null
+    echo "deb [arch=${arch} signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/${kubectl_version}/deb/ /" | tee /etc/apt/sources.list.d/kubernetes.list >/dev/null
 
     echo "deb [arch=${arch} signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu ${os_version_codename} stable" | tee /etc/apt/sources.list.d/docker.list >/dev/null
 
@@ -56,6 +68,12 @@ get_apt_dependencies() {
     #min_version is not used here
     while IFS='=' read -r dependency min_version
     do
+
+        if [ "$dependency" == "minikube" ]
+        then
+            printf "%s\n" " -> Installing $dependency: ${color_yellow}SKIP${color_normal} (Needs to be installed later)"
+            continue
+        fi
         
         printf "%s" " -> Installing $dependency: "
         
@@ -145,25 +163,7 @@ install_minikube() {
 
     curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb
     dpkg -i minikube_latest_amd64.deb
-    #Check that it's been installed
-    is_installed minikube
     rm -f minikube_latest_amd64.deb
-
-}
-
-#This uses dpkg to check a dependency is installed, it does not make version checks, reference check_dependencies() for that
-#A dependency compiled from source might not be listed by dpkg, in such cases this procedure wouldn't work
-is_installed() {
-
-    if ! dpkg -l $1 > /dev/null
-    then
-        printf "%s\n" "$1: ${color_red}FAIL${color_normal}"
-        printf "%s\n" ""
-        printf "%s\n" "${color_red}ERROR${color_normal}:  $1: Could not be installed"
-        exit 1;
-    fi
-
-    printf "%s\n" "$1: ${color_green}PASS${color_normal}"
 
 }
 
@@ -177,8 +177,8 @@ fi
 add_trusted_keys
 update
 get_apt_dependencies
-check_apt_dependencies
 install_minikube
+check_apt_dependencies
 copy_fonts
 
 printf "%s\n" ""
