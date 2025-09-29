@@ -1,31 +1,28 @@
 FROM ghcr.io/florez-carlos/dev-env-ubuntu-base-img:latest
 LABEL org.opencontainers.image.authors="carlos@florez.co.uk"
 
-#Configurable args, define these with your own, these are build time args
-ARG LOCALTIME=Pacific
-ARG GIT_USER_NAME=user
-ARG GIT_USER_USERNAME=user
-ARG GIT_USER_EMAIL=none@none.com
-ARG GIT_USER_SIGNINGKEY=gpg_key_id
-ARG AZ_LOGIN_APP_ID=app_id
-ARG AZ_LOGIN_TENANT_ID=tenant_id
-ARG AZ_LOGIN_CERT_PATH=path
-ARG AZ_LOGIN_VAULT_NAME=vault_name
-ARG NVM_VERSION=v0.40.3
-
-#Static args (some of these are redefined by the Makefile)
-ARG USER=user
-ARG GROUP=user
-ARG UID=1000
-ARG GID=1000
-ARG KEEP_ZSHRC=yes
+ARG USER
+ARG GROUP
+ARG UID
+ARG GID
+ARG LOCALTIME
+ARG NVM_VERSION
+ARG GIT_USER_NAME
+ARG GIT_USER_USERNAME
+ARG GIT_USER_EMAIL
+ARG GIT_USER_SIGNINGKEY
+ARG AZ_LOGIN_APP_ID
+ARG AZ_LOGIN_TENANT_ID
+ARG AZ_LOGIN_CERT_PATH
+ARG AZ_LOGIN_VAULT_NAME
 
 ENV USER=$USER
 ENV GROUP=$GROUP
 ENV UID=$UID
 ENV GID=$GID
 ENV LOCALTIME=$LOCALTIME
-ENV GIT_USER_NAME=$GIT_USER_NAME
+ENV NVM_VERSION=$NVM_VERSION
+ENV GIT_USER_NAME=${GIT_USER_NAME}
 ENV GIT_USER_USERNAME=$GIT_USER_USERNAME
 ENV GIT_USER_EMAIL=$GIT_USER_EMAIL
 ENV GIT_USER_SIGNINGKEY=$GIT_USER_SIGNINGKEY
@@ -33,8 +30,7 @@ ENV AZ_LOGIN_APP_ID=$AZ_LOGIN_APP_ID
 ENV AZ_LOGIN_TENANT_ID=$AZ_LOGIN_TENANT_ID
 ENV AZ_LOGIN_CERT_PATH=$AZ_LOGIN_CERT_PATH
 ENV AZ_LOGIN_VAULT_NAME=$AZ_LOGIN_VAULT_NAME
-
-ENV KEEP_ZSHRC=$KEEP_ZSHRC
+ENV KEEP_ZSHRC=yes
 ENV HOME=/home/${USER}
 ENV XDG_DATA_HOME=$HOME/.local/share
 ENV XDG_CONFIG_HOME=$HOME/.config
@@ -57,7 +53,7 @@ RUN --mount=type=secret,id=PASSWORD \
  && useradd -rm -s /bin/bash -g ${GROUP} -G sudo -u ${UID} ${USER} -p "$(openssl passwd -1 ${password})"
 
 #Set Timezone to user provided/default
-RUN rm /etc/localtime && ln -s /usr/share/zoneinfo/US/$LOCALTIME /etc/localtime
+RUN rm /etc/localtime && ln -s /usr/share/zoneinfo/$LOCALTIME /etc/localtime
 
 # $XDG_CONFIG_HOME/nvim
 # $XDG_DATA_HOME/nvim/site/pack/plugins
@@ -79,10 +75,6 @@ RUN ln -s $DOT_HOME_ZSH/zshrc $HOME/.zshrc \
 && ln -s $DOT_HOME_ZSH/zlogin $HOME/.zlogin \
 && ln -s $DOT_HOME_ZSH/zprofile $HOME/.zprofile \
 && ln -s $DOT_HOME_ZSH/zshenv $HOME/.zshenv
-# && ln -s $DOT_HOME_VIM/init.lua $XDG_CONFIG_HOME/nvim/init.lua \
-# && ln -s $DOT_HOME_VIM/ftplugin $XDG_CONFIG_HOME/nvim/ftplugin \
-# && ln -s $DOT_HOME_LIB/vim-plugins $XDG_DATA_HOME/nvim/site/pack/plugins/start \
-# && ln -s $DOT_HOME_VIM/lua $XDG_CONFIG_HOME/nvim/lua
 
 #Install Powerlevel10k
 RUN yes Y | $DOT_HOME_LIB/ohmyzsh/tools/install.sh

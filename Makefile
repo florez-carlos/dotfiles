@@ -1,14 +1,31 @@
+export IMAGE_VERSION := 2.1.2
 export MODULE_HOME := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 SCRIPTS_DIR := $(MODULE_HOME)/scripts
 export DOT_HOME_CONFIG := $(MODULE_HOME)/config
 INSTALL_HOST_DEPENDENCIES := $(SCRIPTS_DIR)/install-host-dependencies.sh
 ENABLE_UFW := $(SCRIPTS_DIR)/enable-ufw.sh
+
+# -- BUILD ARGS BEGIN ---
 export UID := $(shell id -u)
 export GID := $(shell id -g)
 export GROUP := $(shell id -gn)
 export GPG_TTY := $(shell tty)
+
+# Uncomment the desired timezone or set with any available in /usr/share/timezone
+# export LOCALTIME := America/Los_Angeles
+# export LOCALTIME := America/New_York
+export LOCALTIME := UTC
+
+export NVM_VERSION := v0.40.3
+# -- BUILD ARGS END --
+
+# -- RUN ARGS BEGIN --
+#Uncomment the desired python version, then build
+# !This is only respected by venv on a python repo!
+# export PYTHON_VERSION := 3.11
 export PYTHON_VERSION := 3.12
-export IMAGE_VERSION := 2.1.1
+# -- RUN ARGS END --
+
 PASSWORD ?= $(shell bash -c 'read -r -s -p "Enter the Unix password to use inside the container: " pwd; echo $$pwd')
 
 .PHONY: install enable-ufw build run exec trash start reload
@@ -29,6 +46,8 @@ build:
 		--build-arg GROUP=$(GROUP) \
 		--build-arg UID=$(UID) \
 		--build-arg GID=$(GID) \
+		--build-arg NVM_VERSION=$(NVM_VERSION) \
+		--build-arg LOCALTIME=$(LOCALTIME) \
 		--build-arg GIT_USER_NAME \
 		--build-arg GIT_USER_USERNAME \
 		--build-arg GIT_USER_EMAIL \
