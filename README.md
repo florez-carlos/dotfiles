@@ -261,23 +261,6 @@ sudo chmod 600 $HOME/.ssh/id_rsa
 sudo chmod 600 $HOME/.ssh/id_rsa.pub
 ```
 
-Install the keychain dependency, which starts the SSH agent automatically on login
-
-```bash
-sudo apt-get update -y && sudo apt-get upgrade -y
-sudo apt-get install keychain -y
-cat <<"EOT" > $HOME/.bash_profile
-eval `keychain --eval --agents ssh id_rsa`
-if [ -n "$BASH_VERSION" ]; then
-    # include .bashrc if it exists
-    if [ -f "$HOME/.bashrc" ]; then
-        . "$HOME/.bashrc"
-    fi
-fi
-EOT
-. $HOME/.bash_profile
-```
-
 Confirm the SSH agent is running and key is added
 ```bash
 ssh-add -l
@@ -309,22 +292,6 @@ Assign the correct permissions to the SSH files
 ```bash
 sudo chmod 600 $HOME/.ssh/id_rsa
 sudo chmod 600 $HOME/.ssh/id_rsa.pub
-```
-Install the keychain dependency, which starts the SSH agent automatically on login
-
-```bash
-sudo apt-get update -y && sudo apt-get upgrade -y
-sudo apt-get install keychain -y
-cat <<"EOT" > $HOME/.bash_profile
-eval `keychain --eval --agents ssh id_rsa`
-if [ -n "$BASH_VERSION" ]; then
-    # include .bashrc if it exists
-    if [ -f "$HOME/.bashrc" ]; then
-        . "$HOME/.bashrc"
-    fi
-fi
-EOT
-. $HOME/.bash_profile
 ```
 
 Confirm the SSH agent is running and key is added
