@@ -258,7 +258,7 @@ Assign the correct permissions to the SSH files
 
 ```bash
 sudo chmod 600 $HOME/.ssh/id_rsa
-sudo chmod 600 $HOME/.ssh/id_rsa.pub
+sudo chmod 644 $HOME/.ssh/id_rsa.pub
 ```
 
 Confirm the SSH agent is running and key is added
@@ -291,7 +291,7 @@ Assign the correct permissions to the SSH files
 
 ```bash
 sudo chmod 600 $HOME/.ssh/id_rsa
-sudo chmod 600 $HOME/.ssh/id_rsa.pub
+sudo chmod 644 $HOME/.ssh/id_rsa.pub
 ```
 
 Confirm the SSH agent is running and key is added
@@ -326,7 +326,7 @@ Assign the correct permissions to the files
 
 ```bash
 sudo chmod 600 $HOME/.gnupg/private.pem
-sudo chmod 600 $HOME/.gnupg/public.pem
+sudo chmod 644 $HOME/.gnupg/public.pem
 ```
 
 Add the key to GPG agent
