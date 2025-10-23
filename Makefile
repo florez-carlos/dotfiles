@@ -1,4 +1,4 @@
-export IMAGE_VERSION := 2.1.2
+export IMAGE_VERSION := 2.2.0
 export MODULE_HOME := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 SCRIPTS_DIR := $(MODULE_HOME)/scripts
 export DOT_HOME_CONFIG := $(MODULE_HOME)/config
@@ -68,6 +68,9 @@ run:
 		-v $$HOME/workspace:$$HOME/workspace \
 		-v $$HOME/.gnupg:$$HOME/.gnupg \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
+		-v $$XDG_RUNTIME_DIR/$$WAYLAND_DISPLAY:$$XDG_RUNTIME_DIR/$$WAYLAND_DISPLAY \
+		-e XDG_RUNTIME_DIR=$$XDG_RUNTIME_DIR \
+		-e XDG_SESSION_TYPE=$$XDG_SESSION_TYPE \
 		-e SSH_AUTH_SOCK=$$SSH_AUTH_SOCK \
 		-e PYTHON_VERSION=$$PYTHON_VERSION \
 		-e DISPLAY=$$DISPLAY \
