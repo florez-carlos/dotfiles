@@ -15,6 +15,7 @@ ARG AZ_LOGIN_APP_ID
 ARG AZ_LOGIN_TENANT_ID
 ARG AZ_LOGIN_CERT_PATH
 ARG AZ_LOGIN_VAULT_NAME
+ARG HOST_INPUT_GID
 
 ENV USER=$USER
 ENV GROUP=$GROUP
@@ -41,6 +42,7 @@ ENV DOT_HOME_LIB=$DOT_HOME/lib
 ENV DOT_HOME_VIM=$DOT_HOME/vim
 ENV M2_HOME=$HOME/.m2
 ENV WORKSPACE=$HOME/workspace
+ENV HOST_INPUT_GID=$HOST_INPUT_GID
 
 SHELL ["/bin/bash", "-c"]
 
@@ -51,6 +53,20 @@ RUN groupadd -g ${GID} -r ${GROUP}
 RUN --mount=type=secret,id=PASSWORD \
     password="$(cat /run/secrets/PASSWORD)" \
  && useradd -rm -s /bin/bash -g ${GROUP} -G sudo -u ${UID} ${USER} -p "$(openssl passwd -1 ${password})"
+
+#Add the input group
+RUN <<-EOF
+  IMAGE_INPUT_NAME=$(getent group $HOST_INPUT_GID | cut -d: -f1)
+  if [ $(getent group $HOST_INPUT_GID) ]; then
+    groupmod -g 2000 $IMAGE_INPUT_NAME
+  fi
+  if [ $(getent passwd $IMAGE_INPUT_NAME) ]; then
+    usermod -g 2000 $IMAGE_INPUT_NAME
+    usermod -u 2000 $IMAGE_INPUT_NAME
+  fi
+  groupadd -g $HOST_INPUT_GID input
+  usermod -aG input $USER
+EOF
 
 #Set Timezone to user provided/default
 RUN rm /etc/localtime && ln -s /usr/share/zoneinfo/$LOCALTIME /etc/localtime

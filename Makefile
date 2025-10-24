@@ -1,4 +1,4 @@
-export IMAGE_VERSION := 2.2.0
+export IMAGE_VERSION := 2.3.0
 export MODULE_HOME := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 SCRIPTS_DIR := $(MODULE_HOME)/scripts
 export DOT_HOME_CONFIG := $(MODULE_HOME)/config
@@ -46,6 +46,7 @@ build:
 		--build-arg GROUP=$(GROUP) \
 		--build-arg UID=$(UID) \
 		--build-arg GID=$(GID) \
+		--build-arg HOST_INPUT_GID=$$(getent group input | cut -d: -f3) \
 		--build-arg NVM_VERSION=$(NVM_VERSION) \
 		--build-arg LOCALTIME=$(LOCALTIME) \
 		--build-arg GIT_USER_NAME \
@@ -67,6 +68,7 @@ run:
 	docker run -it --rm -d \
 		--net=host \
 		--name dev-env-cont \
+		--device=/dev/input:/dev/input \
 		-v $$(dirname $$SSH_AUTH_SOCK):$$(dirname $$SSH_AUTH_SOCK) \
 		-v $$HOME/workspace:$$HOME/workspace \
 		-v $$HOME/.gnupg:$$HOME/.gnupg \
