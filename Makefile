@@ -60,7 +60,10 @@ build:
 		-t do-not-push/$(GIT_USER_USERNAME)/dev-env-img:v$$IMAGE_VERSION .
 	@rm $$HOME/delete-me.txt
 
+#xhost commands allow X server in the container, important for Wayland environments using Xwayland
 run:
+	@xhost +local:docker
+	@xhost +SI:localuser:$$(id -un)
 	docker run -it --rm -d \
 		--net=host \
 		--name dev-env-cont \
