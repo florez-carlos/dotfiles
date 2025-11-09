@@ -261,6 +261,11 @@ sudo chmod 600 $HOME/.ssh/id_rsa
 sudo chmod 644 $HOME/.ssh/id_rsa.pub
 ```
 
+Add the key to the agent
+```bash
+cd $HOME/.ssh && ssh-add id_rsa 
+```
+
 Confirm the SSH agent is running and key is added
 ```bash
 ssh-add -l
@@ -292,6 +297,11 @@ Assign the correct permissions to the SSH files
 ```bash
 sudo chmod 600 $HOME/.ssh/id_rsa
 sudo chmod 644 $HOME/.ssh/id_rsa.pub
+```
+
+Add the key to the agent
+```bash
+cd $HOME/.ssh && ssh-add id_rsa 
 ```
 
 Confirm the SSH agent is running and key is added
