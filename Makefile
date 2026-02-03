@@ -1,4 +1,4 @@
-export IMAGE_VERSION := 2.3.0
+export IMAGE_VERSION := 2.4.0
 export MODULE_HOME := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 SCRIPTS_DIR := $(MODULE_HOME)/scripts
 export DOT_HOME_CONFIG := $(MODULE_HOME)/config
