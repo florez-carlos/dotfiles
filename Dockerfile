@@ -124,29 +124,29 @@ vim.g.python3_host_prog = "/usr/local/bin/python" .. os.getenv("PYTHON_VERSION")
 ' >> $XDG_CONFIG_HOME/nvim/init.lua
 
 # Enable nvim-jdtls plugin
-RUN echo -e '\
-return {\n\
-  {\n\
-    "mfussenegger/nvim-jdtls",\n\
-    name = "nvim-jdtls",\n\
-  },\n\
-}\
-' > $XDG_CONFIG_HOME/nvim/lua/plugins/nvim-jdtls.lua
+RUN cat > $XDG_CONFIG_HOME/nvim/lua/plugins/nvim-jdtls.lua << 'EOF'
+return {
+  {
+    "mfussenegger/nvim-jdtls",
+    name = "nvim-jdtls",
+  },
+}
+EOF
 
 # Enable render-markdown plugin
-RUN echo -e '\
-return {\n\
-  {\n\
-    'MeanderingProgrammer/render-markdown.nvim',\n\
-    dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.nvim' },            -- if you use the mini.nvim suite\n\
-    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.icons' },        -- if you use standalone mini plugins\n\
-    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons\n\
-    ---@module 'render-markdown'\n\
-    ---@type render.md.UserConfig\n\
-    opts = {},\n\
-  },\n\
-}\
-' > $XDG_CONFIG_HOME/nvim/lua/plugins/render-markdown.lua
+RUN cat > $XDG_CONFIG_HOME/nvim/lua/plugins/render-markdown.lua << 'EOF'
+return {
+  {
+    'MeanderingProgrammer/render-markdown.nvim',
+    dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.nvim' },            -- if you use the mini.nvim suite
+    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.icons' },        -- if you use standalone mini plugins
+    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+    ---@module 'render-markdown'
+    ---@type render.md.UserConfig
+    opts = {},
+  },
+}
+EOF
 
 # Install pip dependencies
 RUN /usr/local/bin/python3.11 -m pip install --upgrade pip
