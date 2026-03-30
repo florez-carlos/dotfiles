@@ -30,9 +30,10 @@ A containerized development environment with essential tools and packages
 
 # Installation
 
-Supported Distros:
+Installation is supported for the following:
 
- - Ubuntu 24.04+
+ - Ubuntu LTS (amd64)
+ - MacOS (amd64/rosetta)
 
 > [!NOTE]
 > If using a remote SSH client to connect to the host machine, make sure to [follow these instructions](#configure-a-remote-ssh-client-optional) to set up the remote SSH client
@@ -42,9 +43,17 @@ Supported Distros:
   
 These dependencies are required to clone the repo and invoke the Makefile targets. <br>
 
+### Ubuntu
 ```bash
 sudo apt-get update -y && sudo apt-get upgrade -y
 sudo apt-get install git make curl -y
+```
+
+### MacOS
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew install git make curl
 ```
 
 ## Add SSH and GPG keys
