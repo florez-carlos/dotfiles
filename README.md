@@ -9,7 +9,7 @@ A containerized development environment with essential tools and packages
   * [Add SSH and GPG Keys](#add-ssh-and-gpg-keys)
   * [Create the workspace dir and clone the repo](#create-the-workspace-dir-and-clone-the-repo)
   * [Install required dependencies on the host machine](#install-required-dependencies-on-the-host-machine)
-  * [Export required env variables to bashrc](#export-required-env-variables-to-bashrc)
+  * [Export required env variables](#export-required-env-variables)
   * [Set pinentry-mode in gpg conf file](#set-pinentry-mode-in-gpg-conf-file)
   * [Login to the Github container registry to gain access to the base image](#login-to-the-github-container-registry-to-gain-access-to-the-base-image)
   * [Build the Image](#build-the-image)
@@ -102,33 +102,46 @@ sudo pkill -u $USER
 ### MacOS
 
 ```bash
-make install-mac
+sudo make install
 ```
 
-## Export required env variables to bashrc
+## Export required env variables
 
 These are necessary to build your git config file, some are required at container build time and others are <br>
-required at container runtime, therefore it's recommended to keep these env variables in your .bashrc <br>
+required at container runtime<br>
 > [!NOTE]
 > :exclamation: **Make sure to replace the variables in brackets with the relevant credentials.** <br>
 > :warning: **if the value contains empty space, wrap the entire value in single quotes 'like this'**
 
+### Ubuntu
 ```bash
 cat <<EOT >> $HOME/.bashrc
 export GIT_USER_NAME=<Git name, not the username but the name>
 export GIT_USER_USERNAME=<Git username, not the name but the username>
 export GIT_USER_SIGNINGKEY=<gpg public key id>
 export GIT_USER_EMAIL=<example@example.com>
-export AZ_LOGIN_APP_ID=<Azure login service principal app id>
-export AZ_LOGIN_TENANT_ID=<Azure login service principal tenant id>
-export AZ_LOGIN_CERT_PATH=<Azure login service principal certificate path>
-export AZ_LOGIN_VAULT_NAME=<Azure login service principal vault name>
 alias start='cd $HOME/workspace/dotfiles && make start'
 alias hook='cd $HOME/workspace/dotfiles && make hook'
 alias trash='cd $HOME/workspace/dotfiles && make trash'
 alias reload='cd $HOME/workspace/dotfiles && make trash && sleep 5 && make start'
 EOT
 . $HOME/.bashrc
+```
+
+### MacOS
+
+```bash
+cat <<EOT >> $HOME/.zshrc
+export GIT_USER_NAME=<Git name, not the username but the name>
+export GIT_USER_USERNAME=<Git username, not the name but the username>
+export GIT_USER_SIGNINGKEY=<gpg public key id>
+export GIT_USER_EMAIL=<example@example.com>
+alias start='cd $HOME/workspace/dotfiles && make start'
+alias hook='cd $HOME/workspace/dotfiles && make hook'
+alias trash='cd $HOME/workspace/dotfiles && make trash'
+alias reload='cd $HOME/workspace/dotfiles && make trash && sleep 5 && make start'
+EOT
+. $HOME/.zshrc
 ```
 
 ## Set pinentry-mode in gpg conf file
