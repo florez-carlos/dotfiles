@@ -7,10 +7,7 @@ A containerized development environment with essential tools and packages
 * [Installation](#installation)
   * [Install basic dependencies](#install-basic-dependencies)
   * [Add SSH and GPG Keys](#add-ssh-and-gpg-keys)
-    * [SSH Key](#ssh-key)
-    * [GPG Key](#gpg-key)
   * [Create the workspace dir and clone the repo](#create-the-workspace-dir-and-clone-the-repo)
-  * [Add Azure Service Principal Certficate](#add-azure-service-principal-certificate)
   * [Install required dependencies on the host machine](#install-required-dependencies-on-the-host-machine)
   * [Export required env variables to bashrc](#export-required-env-variables-to-bashrc)
   * [Set pinentry-mode in gpg conf file](#set-pinentry-mode-in-gpg-conf-file)
@@ -83,26 +80,16 @@ cd $HOME/workspace
 git clone git@github.com:florez-carlos/dotfiles.git
 cd dotfiles
 ```
-## Add Azure Service Principal Certificate
-
-This certificate is used to authenticate against Azure, allowing for programmatic access of Azure resources </br>
-Add the certificate in PEM format to the workspace directory, the certificate must hold both private key/public certificate </br>
-> [!NOTE]
-> :warning: Replace the path in brackets with the path to the existing certificate
-```bash
-#This example assumes the certificate is already present in the same machine
-cp </path/to/az/certificate> $HOME/workspace/terminal-auth-cert.pem
-```
-> [!NOTE]
-> Some repositories need programatic access to Azure in order to access files that may be outside of Git Version Control
 
 ## Install required dependencies on the host machine
 
 These dependencies are directly installed to the host machine
 
+### Ubuntu
+
 Run the install target. <br>
 > [!NOTE]
-> This will install the following to the host machine: MesloLGS, Minikube and the dependencies listed on [host dependencies file](config/host-dependencies.txt) 
+> This will install the dependencies listed on [host dependencies file](config/host-dependencies.txt) 
 
 ```bash
 sudo make install -e USER=$USER -e HOME=$HOME
@@ -110,6 +97,12 @@ sudo make install -e USER=$USER -e HOME=$HOME
 Log out and log back in for group changes to take effect </br>
 ```bash
 sudo pkill -u $USER
+```
+
+### MacOS
+
+```bash
+make install-mac
 ```
 
 ## Export required env variables to bashrc
