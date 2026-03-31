@@ -37,11 +37,11 @@ EOF
   ;;
 esac
 
-if [[ "$(uname -s)" == "Darwin" ]]; then
-  RC_FILE=$HOME/.zshrc
-else
-  RC_FILE=$HOME/.bashrc
-fi
+case "$SHELL" in
+  */zsh)   RC_FILE="$HOME/.zshrc" ;;
+  */bash)  RC_FILE="$HOME/.bashrc" ;;
+  *)       RC_FILE="$HOME/.bashrc" ;;
+esac
 
 cat >> "$RC_FILE" <<'EOF'
 if [ -z "$SSH_AUTH_SOCK" ]; then

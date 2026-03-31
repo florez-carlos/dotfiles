@@ -9,7 +9,7 @@ A containerized development environment with essential tools and packages
   * [Inject SSH Key](#inject-ssh-key)
   * [Create the workspace dir and clone the repo](#create-the-workspace-dir-and-clone-the-repo)
   * [Install required dependencies on the host machine](#install-required-dependencies-on-the-host-machine)
-  * [Export required env variables](#export-required-env-variables)
+  * [Config Git](#config-git)
   * [Build the Image](#build-the-image)
   * [Manually set font in terminal preferences](#manually-set-font-in-terminal-preferences)
 * [Using Dotfiles](#using-dotfiles)
@@ -96,43 +96,13 @@ sudo pkill -u $USER
 make install
 ```
 
-## Export required env variables
 
-These are necessary to build your git config file, some are required at container build time and others are <br>
-required at container runtime<br>
-> [!NOTE]
-> :exclamation: **Make sure to replace the variables in brackets with the relevant credentials.** <br>
-> :warning: **if the value contains empty space, wrap the entire value in single quotes 'like this'**
+## Config Git
 
-### Ubuntu
+This will append to .bashrc/.zshrc your Git name, username, email <br>
+It will also append necessary commands to use dotfiles
 ```bash
-cat <<EOT >> $HOME/.bashrc
-export GIT_USER_NAME=<Git name, not the username but the name>
-export GIT_USER_USERNAME=<Git username, not the name but the username>
-export GIT_USER_SIGNINGKEY=<gpg public key id>
-export GIT_USER_EMAIL=<example@example.com>
-alias start='cd $HOME/workspace/dotfiles && make start'
-alias hook='cd $HOME/workspace/dotfiles && make hook'
-alias trash='cd $HOME/workspace/dotfiles && make trash'
-alias reload='cd $HOME/workspace/dotfiles && make trash && sleep 5 && make start'
-EOT
-. $HOME/.bashrc
-```
-
-### MacOS
-
-```bash
-cat <<EOT >> $HOME/.zshrc
-export GIT_USER_NAME=<Git name, not the username but the name>
-export GIT_USER_USERNAME=<Git username, not the name but the username>
-export GIT_USER_SIGNINGKEY=<gpg public key id>
-export GIT_USER_EMAIL=<example@example.com>
-alias start='cd $HOME/workspace/dotfiles && make start'
-alias hook='cd $HOME/workspace/dotfiles && make hook'
-alias trash='cd $HOME/workspace/dotfiles && make trash'
-alias reload='cd $HOME/workspace/dotfiles && make trash && sleep 5 && make start'
-EOT
-. $HOME/.zshrc
+cd $HOME/workspace/dotfiles/scripts/ && ./inject-env.sh
 ```
 
 ## Build the image
