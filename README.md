@@ -14,14 +14,9 @@ A containerized development environment with essential tools and packages
   * [Login to the Github container registry to gain access to the base image](#login-to-the-github-container-registry-to-gain-access-to-the-base-image)
   * [Build the Image](#build-the-image)
   * [Manually set font in terminal preferences](#manually-set-font-in-terminal-preferences)
-  * [Enable UFW Ports (optional)](#enable-ufw-ports-optional)
 * [Using Dotfiles](#using-dotfiles)
 * [Configure a Remote SSH Client (optional)](#configure-a-remote-ssh-client-optional)
-* [Adding an existing SSH key](#adding-an-existing-ssh-key)
-* [Creating an SSH key](#creating-an-ssh-key)
-* [Adding an existing GPG key](#adding-an-existing-gpg-key)
-* [Creating a GPG key](#creating-a-gpg-key)
-* [Logging in to Azure](#logging-in-to-azure)
+* [Inject an SSH Key](#inject-an-ssh-key)
 * [Known Issues](#known-issues)
 
 
@@ -31,10 +26,6 @@ Installation is supported for the following:
 
  - Ubuntu LTS (amd64)
  - MacOS (amd64/rosetta)
-
-> [!NOTE]
-> If using a remote SSH client to connect to the host machine, make sure to [follow these instructions](#configure-a-remote-ssh-client-optional) to set up the remote SSH client
-
 
 ## Install basic dependencies
   
@@ -102,7 +93,7 @@ sudo pkill -u $USER
 ### MacOS
 
 ```bash
-sudo make install
+make install
 ```
 
 ## Export required env variables
@@ -116,10 +107,6 @@ required at container runtime<br>
 ### Ubuntu
 ```bash
 cat <<EOT >> $HOME/.bashrc
-if [ -z "$SSH_AUTH_SOCK" ]; then
-eval "$(ssh-agent -s)"
-fi
-ssh-add $HOME/.ssh/id_rsa
 export GIT_USER_NAME=<Git name, not the username but the name>
 export GIT_USER_USERNAME=<Git username, not the name but the username>
 export GIT_USER_SIGNINGKEY=<gpg public key id>
@@ -136,10 +123,6 @@ EOT
 
 ```bash
 cat <<EOT >> $HOME/.zshrc
-if [ -z "$SSH_AUTH_SOCK" ]; then
-eval "$(ssh-agent -s)"
-fi
-ssh-add $HOME/.ssh/id_rsa
 export GIT_USER_NAME=<Git name, not the username but the name>
 export GIT_USER_USERNAME=<Git username, not the name but the username>
 export GIT_USER_SIGNINGKEY=<gpg public key id>
@@ -152,52 +135,16 @@ EOT
 . $HOME/.zshrc
 ```
 
-## Set pinentry-mode in gpg conf file
-
-This fixes an issue where gpg does not prompt for the passphrase when attempting to sign a commit in the container.
-
-```bash
-cat <<EOT >> $HOME/.gnupg/gpg.conf
-pinentry-mode loopback
-EOT
-```
-
-## Login to the Github container registry to gain access to the base image
-
-This is required to build the image. <br>
-
-Add your Github Personal Access token with a minimum of package read permissions.
-
-```bash
-export GIT_PAT=<Github Personal Access Token with at least package read permissions>
-```
-
-Then login to the Github container registry.
-
-```bash
-echo $GIT_PAT | docker login ghcr.io -u $GIT_USER_USERNAME --password-stdin
-```
-
 ## Build the image
 
 ```bash
-cd $HOME/workspace/dotfiles
+cd $HOME/workspace/dotfiles || exit 1
 make build
 ```
 
 ## Manually set font in terminal preferences
 
 Set the font to 'MesloLGS' is terminal preferences and restart the terminal.
-
-## Enable UFW ports (optional)
-
-This is only required if using a remote SSH client
-> [!NOTE]
-> :warning: This will enable ports 22,80,443 on the host machine
-
-```bash
-make enable-ufw
-```
 
 ---
 
@@ -252,147 +199,24 @@ Download the following fonts and install on your machine:
 ### Add SSH key
 
 > [!NOTE]
-> If using Ubuntu as the SSH client, follow [these instructions](#adding-an-existing-ssh-key) to add the SSH key to the SSH agent in order to connect to the remote machine.
+> Follow your client instructions to add an SSH key 
 
 
-# Adding an existing SSH key
+# Inject SSH Key
 
-> [!NOTE]
-> :warning: It's assumed name of the key is <em>id_rsa</em> </br>
-
-Create the .ssh directory and assign correct permissions
+This will allow you to create a new key or import an existing key
 
 ```bash
-mkdir -p $HOME/.ssh
-sudo chmod 700 $HOME/.ssh
-```
-
-Place the keys into the .ssh directory </br>
-> [!NOTE]
-> :warning: Replace the path in brackets with the path to the existing SSH key
-
-```bash
-# This example assumes the key already exists somewhere in the same machine
-cp <path/to/private/ssh/key> $HOME/.ssh/id_rsa
-cp <path/to/public/ssh/key> $HOME/.ssh/id_rsa.pub
-```
-
-Assign the correct permissions to the SSH files
-
-```bash
-sudo chmod 600 $HOME/.ssh/id_rsa
-sudo chmod 644 $HOME/.ssh/id_rsa.pub
-```
-
-Add the key to the agent
-```bash
-cd $HOME/.ssh && ssh-add id_rsa 
+cd $HOME/workspace/dotfiles/scripts/ && ./inject-ssh-key.sh
 ```
 
 Confirm the SSH agent is running and key is added
 ```bash
 ssh-add -l
 ```
+
 should give an output like so:
 > <em>4096 SHA256:aaaaAAAAAAAAaaaaAAAAAAAAaa /home/$user/.ssh/id_rsa (RSA)</em>
-
-# Creating an SSH key
-
-Create the .ssh directory and assign correct permissions
-```bash
-mkdir -p $HOME/.ssh
-sudo chmod 700 $HOME/.ssh
-```
-
-Generate a new RSA key that can be used for SSH authentication </br>
-> [!NOTE]
-> Notice the key is being generated with a comment of <em>dev1</em>, the comment appears at the end of the public key signature and has no impact on the key therefore feel free to replace for a more suitable comment </br>
-> :warning: It's important to avoid generating an <em>ed_25519</em> key as it is currently not supported by the Azure SSH key resource (2023-09-12) </br>
-
-```bash
-ssh-keygen -m PEM -t rsa -b 4096 -C "dev1"
-```
-When presented with this prompt, type Enter to save to the default location
-> Enter file in which to save the key (/home/user/.ssh/id_rsa):
-
-Assign the correct permissions to the SSH files
-
-```bash
-sudo chmod 600 $HOME/.ssh/id_rsa
-sudo chmod 644 $HOME/.ssh/id_rsa.pub
-```
-
-Add the key to the agent
-```bash
-cd $HOME/.ssh && ssh-add id_rsa 
-```
-
-Confirm the SSH agent is running and key is added
-```bash
-ssh-add -l
-```
-should give an output like so:
-> <em>4096 SHA256:aaaaAAAAAAAAaaaaAAAAAAAAaa /home/$user/.ssh/id_rsa (RSA)</em>
-
-# Adding an existing GPG key
-
-Create the .gnupg directory
-
-> [!NOTE]
-> :warning: It's assumed name of the files are <em>public.pem</em> and <em>private.pem</em> </br>
-
-```bash
-mkdir -p $HOME/.gnupg
-sudo chmod 700 $HOME/.gnupg
-```
-
-Place the keys into the .gnupg directory </br>
-> [!NOTE]
-> :warning: Replace the path in brackets with the path to the existing SSH key
-```bash
-# This example assumes the key already exists somewhere in the same machine
-cp <path/to/gpg_pub/key> $HOME/.gnupg/public.pem
-cp <path/to/gpg_priv/key> $HOME/.gnupg/private.pem
-```
-
-Assign the correct permissions to the files
-
-```bash
-sudo chmod 600 $HOME/.gnupg/private.pem
-sudo chmod 644 $HOME/.gnupg/public.pem
-```
-
-Add the key to GPG agent
-```bash
-gpg --import $HOME/.gnupg/private.pem
-```
-Confirm the agent is running and key is added
-```bash
-gpg --list-keys
-```
-should give output like so
-> /home/user/.gnupg/pubring.kbx </br>
-> ================================== </br>
-> pub   rsa4096 2022-09-29 [SC] [expires: 2023-09-29] </br>
->       333789457489594958AAAAA23483AABBBBCC </br>
-> uid           [ unknown] Full Name <email@email.com> </br>
-> sub   rsa4096 2022-09-29 [E] [expires: 2023-09-29] </br>
-
-# Creating a GPG key
-
-For instructions on generating a [GPG key](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key)
-# Logging in to Azure
-
-```bash
-az login --service-principal -u $AZ_LOGIN_APP_ID -p $AZ_LOGIN_CERT_PATH --tenant $AZ_LOGIN_TENANT_ID
-```
-# Known Issues
-
-The use of loopback pinentry provokes an error when attempting to delete a GPG key, to circumvent, use the following <br>
-command when needing to delete a GPG key:
-```bash
-gpg --batch --yes delete-keys
-```
 
 # License
 [MIT](https://choosealicense.com/licenses/mit/)
