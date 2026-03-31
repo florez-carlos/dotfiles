@@ -10,14 +10,10 @@ A containerized development environment with essential tools and packages
   * [Create the workspace dir and clone the repo](#create-the-workspace-dir-and-clone-the-repo)
   * [Install required dependencies on the host machine](#install-required-dependencies-on-the-host-machine)
   * [Export required env variables](#export-required-env-variables)
-  * [Set pinentry-mode in gpg conf file](#set-pinentry-mode-in-gpg-conf-file)
-  * [Login to the Github container registry to gain access to the base image](#login-to-the-github-container-registry-to-gain-access-to-the-base-image)
   * [Build the Image](#build-the-image)
   * [Manually set font in terminal preferences](#manually-set-font-in-terminal-preferences)
 * [Using Dotfiles](#using-dotfiles)
 * [Configure a Remote SSH Client (optional)](#configure-a-remote-ssh-client-optional)
-* [Known Issues](#known-issues)
-
 
 # Installation
 
@@ -48,7 +44,7 @@ brew install git make curl
 ## Inject SSH key 
 
 > [!NOTE]
-> This is necessary for repository authentication and commit signing
+> This is necessary for repository authentication and commit signing <br>
 > :exclamation: Ensure this key is added to github as both authentication and signing key
 
 ```bash
