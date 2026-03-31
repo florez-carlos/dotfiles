@@ -96,6 +96,7 @@ run:
 			-v /run/host-services/ssh-auth.sock:/run/host-services/ssh-auth.sock \
 			-v $$HOME/workspace:$(CONTAINER_HOME)/workspace \
 			-v $$HOME/.gnupg:$(CONTAINER_HOME)/.gnupg \
+			-v $$HOME/.ssh:$(CONTAINER_HOME)/.ssh \
 			-e SSH_AUTH_SOCK=/run/host-services/ssh-auth.sock \
 			-e PYTHON_VERSION=$$PYTHON_VERSION \
 			-e DISPLAY=$$DISPLAY \
@@ -111,6 +112,7 @@ run:
 			-v $$(dirname $$SSH_AUTH_SOCK):$$(dirname $$SSH_AUTH_SOCK) \
 			-v $$HOME/workspace:$$HOME/workspace \
 			-v $$HOME/.gnupg:$$HOME/.gnupg \
+			-v $$HOME/.ssh:$(CONTAINER_HOME)/.ssh \
 			-v /tmp/.X11-unix:/tmp/.X11-unix \
 			-v $$XDG_RUNTIME_DIR/$$WAYLAND_DISPLAY:$$XDG_RUNTIME_DIR/$$WAYLAND_DISPLAY \
 			-e XDG_RUNTIME_DIR=$$XDG_RUNTIME_DIR \
