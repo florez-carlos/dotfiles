@@ -22,10 +22,12 @@ A containerized development environment with essential tools and packages
 
 # Installation
 
-Installation is supported for the following:
-
- - Ubuntu LTS (amd64)
- - MacOS (amd64/rosetta)
+> [!NOTE]
+> Installation is supported for the following:
+> - Ubuntu LTS (amd64)
+>   - X11
+>   - Wayland
+> - MacOS (amd64/rosetta)
 
 ## Install basic dependencies
   
