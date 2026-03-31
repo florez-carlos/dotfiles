@@ -1,9 +1,12 @@
-export IMAGE_VERSION := 2.4.0
+export IMAGE_VERSION := 2.5.0
 export MODULE_HOME := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 SCRIPTS_DIR := $(MODULE_HOME)/scripts
 export DOT_HOME_CONFIG := $(MODULE_HOME)/config
 INSTALL_HOST_DEPENDENCIES := $(SCRIPTS_DIR)/install-host-dependencies.sh
+INSTALL_MAC_HOST_DEPENDENCIES := $(SCRIPTS_DIR)/install-mac-host-dependencies.sh
 ENABLE_UFW := $(SCRIPTS_DIR)/enable-ufw.sh
+SYSTEM := $(shell uname -s)
+CONTAINER_HOME := /home/$$USER
 
 # -- BUILD ARGS BEGIN ---
 export UID := $(shell id -u)
@@ -17,6 +20,8 @@ export GPG_TTY := $(shell tty)
 export LOCALTIME := UTC
 
 export NVM_VERSION := v0.40.3
+#This is by commit hash
+export ASTRONVIM_VERSION := ae96a25a77864a82d7e363ea4ca1fcfcfa20da94
 # -- BUILD ARGS END --
 
 # -- RUN ARGS BEGIN --
@@ -31,56 +36,92 @@ PASSWORD ?= $(shell bash -c 'read -r -s -p "Enter the Unix password to use insid
 .PHONY: install enable-ufw build run exec trash start reload
 
 install:
-	@$(INSTALL_HOST_DEPENDENCIES)
-	adduser $(USER) docker
-	systemctl start nginx
 
-enable-ufw:
-	@$(ENABLE_UFW)
+	@if [ "$(SYSTEM)" = "Darwin" ]; then \
+		$(INSTALL_MAC_HOST_DEPENDENCIES); \
+	else \
+		$(INSTALL_HOST_DEPENDENCIES); \
+		adduser $(USER) docker; \
+		systemctl start nginx; \
+	fi
 
 # BUILDKIT instruction is required to use the secret flag
 build:
 	@echo $(PASSWORD) > $$HOME/delete-me.txt
-	DOCKER_BUILDKIT=1 docker build \
-		--build-arg USER=$$USER \
-		--build-arg GROUP=$(GROUP) \
-		--build-arg UID=$(UID) \
-		--build-arg GID=$(GID) \
-		--build-arg HOST_INPUT_GID=$$(getent group input | cut -d: -f3) \
-		--build-arg NVM_VERSION=$(NVM_VERSION) \
-		--build-arg LOCALTIME=$(LOCALTIME) \
-		--build-arg GIT_USER_NAME \
-		--build-arg GIT_USER_USERNAME \
-		--build-arg GIT_USER_EMAIL \
-		--build-arg GIT_USER_SIGNINGKEY \
-		--build-arg AZ_LOGIN_APP_ID \
-		--build-arg AZ_LOGIN_TENANT_ID \
-		--build-arg AZ_LOGIN_CERT_PATH \
-		--build-arg AZ_LOGIN_VAULT_NAME \
-		--secret id=PASSWORD,src=$$HOME/delete-me.txt \
-		-t do-not-push/$(GIT_USER_USERNAME)/dev-env-img:v$$IMAGE_VERSION .
+	@if [ "$(SYSTEM)" = "Darwin" ]; then \
+		DOCKER_BUILDKIT=1 docker build \
+			--no-cache \
+			--platform linux/amd64 \
+			--build-arg USER=$$USER \
+			--build-arg GROUP=$(GROUP) \
+			--build-arg UID=$(UID) \
+			--build-arg GID=$(GID) \
+			--build-arg NVM_VERSION=$(NVM_VERSION) \
+			--build-arg ASTRONVIM_VERSION=$(ASTRONVIM_VERSION) \
+			--build-arg LOCALTIME=$(LOCALTIME) \
+			--build-arg GIT_USER_NAME \
+			--build-arg GIT_USER_USERNAME \
+			--build-arg GIT_USER_EMAIL \
+			--build-arg GIT_USER_SIGNINGKEY \
+			--build-arg SYSTEM=$(SYSTEM) \
+			--secret id=PASSWORD,src=$$HOME/delete-me.txt \
+			-t do-not-push/$(GIT_USER_USERNAME)/dev-env-img:v$$IMAGE_VERSION . ; \
+	else \
+		DOCKER_BUILDKIT=1 docker build \
+			--build-arg USER=$$USER \
+			--build-arg GROUP=$(GROUP) \
+			--build-arg UID=$(UID) \
+			--build-arg GID=$(GID) \
+			--build-arg HOST_INPUT_GID=$$(getent group input | cut -d: -f3) \
+			--build-arg NVM_VERSION=$(NVM_VERSION) \
+			--build-arg ASTRONVIM_VERSION=$(ASTRONVIM_VERSION) \
+			--build-arg LOCALTIME=$(LOCALTIME) \
+			--build-arg GIT_USER_NAME \
+			--build-arg GIT_USER_USERNAME \
+			--build-arg GIT_USER_EMAIL \
+			--build-arg GIT_USER_SIGNINGKEY \
+			--build-arg SYSTEM=$(SYSTEM) \
+			--secret id=PASSWORD,src=$$HOME/delete-me.txt \
+			-t do-not-push/$(GIT_USER_USERNAME)/dev-env-img:v$$IMAGE_VERSION . ; \
+	fi
 	@rm $$HOME/delete-me.txt
 
 #xhost commands allow X server in the container, important for Wayland environments using Xwayland
 run:
-	@xhost +local:docker
-	@xhost +SI:localuser:$$(id -un)
-	docker run -it --rm -d \
-		--net=host \
-		--name dev-env-cont \
-		--device=/dev/input:/dev/input \
-		-v $$(dirname $$SSH_AUTH_SOCK):$$(dirname $$SSH_AUTH_SOCK) \
-		-v $$HOME/workspace:$$HOME/workspace \
-		-v $$HOME/.gnupg:$$HOME/.gnupg \
-		-v /tmp/.X11-unix:/tmp/.X11-unix \
-		-v $$XDG_RUNTIME_DIR/$$WAYLAND_DISPLAY:$$XDG_RUNTIME_DIR/$$WAYLAND_DISPLAY \
-		-e XDG_RUNTIME_DIR=$$XDG_RUNTIME_DIR \
-		-e XDG_SESSION_TYPE=$$XDG_SESSION_TYPE \
-		-e SSH_AUTH_SOCK=$$SSH_AUTH_SOCK \
-		-e PYTHON_VERSION=$$PYTHON_VERSION \
-		-e DISPLAY=$$DISPLAY \
-		-e WAYLAND_DISPLAY=$$WAYLAND_DISPLAY \
-		do-not-push/$(GIT_USER_USERNAME)/dev-env-img:v$$IMAGE_VERSION
+	@if [ "$(SYSTEM)" = "Darwin" ]; then \
+		docker run -it --rm -d \
+			--platform linux/amd64 \
+			--net=host \
+			--name dev-env-cont \
+			-v /run/host-services/ssh-auth.sock:/run/host-services/ssh-auth.sock \
+			-v $$HOME/workspace:$(CONTAINER_HOME)/workspace \
+			-v $$HOME/.gnupg:$(CONTAINER_HOME)/.gnupg \
+			-e SSH_AUTH_SOCK=/run/host-services/ssh-auth.sock \
+			-e PYTHON_VERSION=$$PYTHON_VERSION \
+			-e DISPLAY=$$DISPLAY \
+			-e WAYLAND_DISPLAY=$$WAYLAND_DISPLAY \
+			do-not-push/$(GIT_USER_USERNAME)/dev-env-img:v$$IMAGE_VERSION ; \
+	else \
+		xhost +local:docker; \
+		xhost +SI:localuser:$$(id -un); \
+		docker run -it --rm -d \
+			--net=host \
+			--name dev-env-cont \
+			--device=/dev/input:/dev/input \
+			-v $$(dirname $$SSH_AUTH_SOCK):$$(dirname $$SSH_AUTH_SOCK) \
+			-v $$HOME/workspace:$$HOME/workspace \
+			-v $$HOME/.gnupg:$$HOME/.gnupg \
+			-v /tmp/.X11-unix:/tmp/.X11-unix \
+			-v $$XDG_RUNTIME_DIR/$$WAYLAND_DISPLAY:$$XDG_RUNTIME_DIR/$$WAYLAND_DISPLAY \
+			-e XDG_RUNTIME_DIR=$$XDG_RUNTIME_DIR \
+			-e XDG_SESSION_TYPE=$$XDG_SESSION_TYPE \
+			-e SSH_AUTH_SOCK=$$SSH_AUTH_SOCK \
+			-e PYTHON_VERSION=$$PYTHON_VERSION \
+			-e DISPLAY=$$DISPLAY \
+			-e WAYLAND_DISPLAY=$$WAYLAND_DISPLAY \
+			do-not-push/$(GIT_USER_USERNAME)/dev-env-img:v$$IMAGE_VERSION ; \
+	fi
+
 
 update-host:
 	@$(INSTALL_HOST_DEPENDENCIES)

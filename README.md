@@ -116,6 +116,10 @@ required at container runtime<br>
 ### Ubuntu
 ```bash
 cat <<EOT >> $HOME/.bashrc
+if [ -z "$SSH_AUTH_SOCK" ]; then
+eval "$(ssh-agent -s)"
+fi
+ssh-add $HOME/.ssh/id_rsa
 export GIT_USER_NAME=<Git name, not the username but the name>
 export GIT_USER_USERNAME=<Git username, not the name but the username>
 export GIT_USER_SIGNINGKEY=<gpg public key id>
@@ -132,6 +136,10 @@ EOT
 
 ```bash
 cat <<EOT >> $HOME/.zshrc
+if [ -z "$SSH_AUTH_SOCK" ]; then
+eval "$(ssh-agent -s)"
+fi
+ssh-add $HOME/.ssh/id_rsa
 export GIT_USER_NAME=<Git name, not the username but the name>
 export GIT_USER_USERNAME=<Git username, not the name but the username>
 export GIT_USER_SIGNINGKEY=<gpg public key id>

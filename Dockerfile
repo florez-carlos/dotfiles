@@ -7,15 +7,13 @@ ARG UID
 ARG GID
 ARG LOCALTIME
 ARG NVM_VERSION
+ARG ASTRONVIM_VERSION
 ARG GIT_USER_NAME
 ARG GIT_USER_USERNAME
 ARG GIT_USER_EMAIL
 ARG GIT_USER_SIGNINGKEY
-ARG AZ_LOGIN_APP_ID
-ARG AZ_LOGIN_TENANT_ID
-ARG AZ_LOGIN_CERT_PATH
-ARG AZ_LOGIN_VAULT_NAME
 ARG HOST_INPUT_GID
+ARG SYSTEM
 
 ENV USER=$USER
 ENV GROUP=$GROUP
@@ -23,14 +21,12 @@ ENV UID=$UID
 ENV GID=$GID
 ENV LOCALTIME=$LOCALTIME
 ENV NVM_VERSION=$NVM_VERSION
+ENV ASTRONVIM_VERSION=$ASTRONVIM_VERSION
 ENV GIT_USER_NAME=${GIT_USER_NAME}
 ENV GIT_USER_USERNAME=$GIT_USER_USERNAME
 ENV GIT_USER_EMAIL=$GIT_USER_EMAIL
 ENV GIT_USER_SIGNINGKEY=$GIT_USER_SIGNINGKEY
-ENV AZ_LOGIN_APP_ID=$AZ_LOGIN_APP_ID
-ENV AZ_LOGIN_TENANT_ID=$AZ_LOGIN_TENANT_ID
-ENV AZ_LOGIN_CERT_PATH=$AZ_LOGIN_CERT_PATH
-ENV AZ_LOGIN_VAULT_NAME=$AZ_LOGIN_VAULT_NAME
+ENV SYSTEM=$SYSTEM
 ENV KEEP_ZSHRC=yes
 ENV HOME=/home/${USER}
 ENV XDG_DATA_HOME=$HOME/.local/share
@@ -47,25 +43,28 @@ ENV HOST_INPUT_GID=$HOST_INPUT_GID
 SHELL ["/bin/bash", "-c"]
 
 #Create User
-RUN groupadd -g ${GID} -r ${GROUP}
+RUN groupadd -g ${GID} -r ${GROUP} || true
 
 #Read password secret from a file
 RUN --mount=type=secret,id=PASSWORD \
     password="$(cat /run/secrets/PASSWORD)" \
- && useradd -rm -s /bin/bash -g ${GROUP} -G sudo -u ${UID} ${USER} -p "$(openssl passwd -1 ${password})"
+ && useradd -rm -s /bin/bash -g ${GID} -G sudo -u ${UID} ${USER} -p "$(openssl passwd -1 ${password})"
 
-#Add the input group
+#Add the input group (wayland only)
+#Correct ssh agent socket permissions (mac only)
 RUN <<-EOF
-  IMAGE_INPUT_NAME=$(getent group $HOST_INPUT_GID | cut -d: -f1)
-  if [ $(getent group $HOST_INPUT_GID) ]; then
-    groupmod -g 2000 $IMAGE_INPUT_NAME
+  if [ "${SYSTEM}" != "Darwin" ]; then
+    IMAGE_INPUT_NAME=$(getent group $HOST_INPUT_GID | cut -d: -f1)
+    if [ $(getent group $HOST_INPUT_GID) ]; then
+      groupmod -g 2000 $IMAGE_INPUT_NAME
+    fi
+    if [ $(getent passwd $IMAGE_INPUT_NAME) ]; then
+      usermod -g 2000 $IMAGE_INPUT_NAME
+      usermod -u 2000 $IMAGE_INPUT_NAME
+    fi
+    groupadd -g $HOST_INPUT_GID input
+    usermod -aG input $USER
   fi
-  if [ $(getent passwd $IMAGE_INPUT_NAME) ]; then
-    usermod -g 2000 $IMAGE_INPUT_NAME
-    usermod -u 2000 $IMAGE_INPUT_NAME
-  fi
-  groupadd -g $HOST_INPUT_GID input
-  usermod -aG input $USER
 EOF
 
 #Set Timezone to user provided/default
@@ -79,7 +78,7 @@ ADD ./zsh $DOT_HOME_ZSH
 ADD ./vim $DOT_HOME_VIM
 ADD ./scripts $DOT_HOME_SCRIPTS
 
-RUN chown -R ${USER}:${GROUP} $HOME $DOT_HOME $XDG_DATA_HOME/jdtls-data
+RUN chown -R ${USER}:${GID} $HOME $DOT_HOME $XDG_DATA_HOME/jdtls-data
 RUN chsh ${USER} -s $(which zsh)
 
 RUN chmod +x -R $DOT_HOME_SCRIPTS
@@ -108,14 +107,15 @@ RUN . $XDG_CONFIG_HOME/nvm/nvm.sh && nvm install node
 RUN . $XDG_CONFIG_HOME/nvm/nvm.sh && npm install -g neovim pyright typescript typescript-language-server
 
 # Lunarvim
-RUN git clone --depth 1 https://github.com/AstroNvim/template ~/.config/nvim && rm -rf $HOME/.config/nvim/.git
+RUN git clone https://github.com/AstroNvim/template ~/.config/nvim
+RUN cd ~/.config/nvim && git reset --hard ${ASTRONVIM_VERSION} && rm -rf $HOME/.config/nvim/.git
 RUN nvim --headless +'' +qa
 
 RUN ln -s $DOT_HOME_VIM/ftplugin $XDG_CONFIG_HOME/nvim/ftplugin
 
 # Enable pyright plugin
 RUN echo -e '\
-require "lspconfig".pyright.setup{}\
+vim.lsp.enable("pyright")\
 ' >> $XDG_CONFIG_HOME/nvim/init.lua
 
 # Set python provider version
