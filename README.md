@@ -6,7 +6,7 @@ A containerized development environment with essential tools and packages
 
 * [Installation](#installation)
   * [Install basic dependencies](#install-basic-dependencies)
-  * [Add SSH and GPG Keys](#add-ssh-and-gpg-keys)
+  * [Inject SSH Key](#inject-ssh-key)
   * [Create the workspace dir and clone the repo](#create-the-workspace-dir-and-clone-the-repo)
   * [Install required dependencies on the host machine](#install-required-dependencies-on-the-host-machine)
   * [Export required env variables](#export-required-env-variables)
@@ -16,7 +16,6 @@ A containerized development environment with essential tools and packages
   * [Manually set font in terminal preferences](#manually-set-font-in-terminal-preferences)
 * [Using Dotfiles](#using-dotfiles)
 * [Configure a Remote SSH Client (optional)](#configure-a-remote-ssh-client-optional)
-* [Inject an SSH Key](#inject-an-ssh-key)
 * [Known Issues](#known-issues)
 
 
@@ -46,21 +45,24 @@ sudo apt-get install git make curl -y
 brew install git make curl
 ```
 
-## Add SSH and GPG keys
+## Inject SSH key 
 
-These are necessary for repository authentication and commit signing
-
-### SSH key
-
-Follow the instructions to [add an existing SSH key](#adding-an-existing-ssh-key) </br>
 > [!NOTE]
-> If you don't have an existing SSH key, follow these instructions to [create an SSH key](#creating-an-ssh-key)
+> This is necessary for repository authentication and commit signing
+> :exclamation: Ensure this key is added to github as both authentication and signing key
 
-### GPG key
+```bash
+cd $HOME/workspace/dotfiles/scripts/ && ./inject-ssh-key.sh
+```
 
-Follow the instructions to [add an existing GPG key](#adding-an-existing-gpg-key) </br>
-> [!NOTE]
-> If you don't have an existing GPG key, follow these instructions to [create a GPG key](#creating-a-gpg-key)
+Confirm the SSH agent is running and key is added
+```bash
+ssh-add -l
+```
+
+should give an output like so:
+> <em>4096 SHA256:aaaaAAAAAAAAaaaaAAAAAAAAaa /home/user/.ssh/id_rsa (RSA)</em>
+
 
 ## Create the workspace dir and clone the repo
 
@@ -154,24 +156,24 @@ Set the font to 'MesloLGS' is terminal preferences and restart the terminal.
 
 To start the container:
 ```bash
-make start
+start
 ```
 
 To reenter a running container:
 ```bash
-make hook
+hook
 ```
 
 To trash the current instance of the container and start a new one:<br />
 > [!NOTE]
 > :warning: **Remember, only contents inside the ~/workspace dir will be persisted across shutdowns**
 ```bash
-make reload
+reload
 ```
 
 To only trash the container and not start a new one:
 ```bash
-make trash
+trash
 ```
 
 To update the host machine dependencies:<br />
@@ -202,23 +204,6 @@ Download the following fonts and install on your machine:
 
 > [!NOTE]
 > Follow your client instructions to add an SSH key 
-
-
-# Inject SSH Key
-
-This will allow you to create a new key or import an existing key
-
-```bash
-cd $HOME/workspace/dotfiles/scripts/ && ./inject-ssh-key.sh
-```
-
-Confirm the SSH agent is running and key is added
-```bash
-ssh-add -l
-```
-
-should give an output like so:
-> <em>4096 SHA256:aaaaAAAAAAAAaaaaAAAAAAAAaa /home/$user/.ssh/id_rsa (RSA)</em>
 
 # License
 [MIT](https://choosealicense.com/licenses/mit/)
