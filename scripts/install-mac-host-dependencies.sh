@@ -6,7 +6,7 @@ color_yellow=$(tput setaf 3)
 color_normal=$(tput sgr0)
 
 
-install_docker() {
+install_dependencies() {
 
   printf "%s\n" ""
   printf "%s\n" " -> Beginning Rosetta Install: "
@@ -27,6 +27,13 @@ install_docker() {
   sudo hdiutil detach /Volumes/Docker
   rm /tmp/Docker.dmg
 
+
+  printf "%s\n" ""
+  printf "%s\n" " -> Beginning Brew Dependencies Install: "
+  printf "%s\n" ""
+  sleep 1
+  brew install minikube jq
+
   printf "%s\n" ""
   printf "%s\n" " -> Beginning dependencies check: "
   printf "%s\n" ""
@@ -35,21 +42,45 @@ install_docker() {
   if [[ "$(uname -m)" == "arm64" ]] && [[ "$(uname -s)" == "Darwin" ]]; then
     if arch -x86_64 /usr/bin/true 2>/dev/null; then
       printf "%s\n" ""
-      printf "%s\n" " -> Rosetta: ${color_green}PASS${color_normal}"
+      printf "%s\n" "-> Rosetta: ${color_green}PASS${color_normal}"
       sleep 1
     else
       printf "%s\n" ""
-      printf "%s\n" " -> Rosetta: ${color_red}FAIL${color_normal}"
+      printf "%s\n" "-> Rosetta: ${color_red}FAIL${color_normal}"
       sleep 1
     fi
   fi
 
   if command -v docker >/dev/null 2>&1; then
-    printf "%s\n" " -> Docker: ${color_green}PASS${color_normal}"
+    printf "%s\n" "-> Docker: ${color_green}PASS${color_normal}"
+    sleep 1
+  else
+    printf "%s\n" "-> Docker: ${color_red}FAIL${color_normal}"
+    sleep 1
+  fi
+
+  if command -v minikube >/dev/null 2>&1; then
+    printf "%s\n" "-> Minikube: ${color_green}PASS${color_normal}"
+    sleep 1
+  else
+    printf "%s\n" "-> Minikube: ${color_red}FAIL${color_normal}"
+    sleep 1
+  fi
+
+  if command -v kubectl >/dev/null 2>&1; then
+    printf "%s\n" "-> Kubectl: ${color_green}PASS${color_normal}"
+    sleep 1
+  else
+    printf "%s\n" "-> Kubectl: ${color_red}FAIL${color_normal}"
+    sleep 1
+  fi
+
+  if command -v jq >/dev/null 2>&1; then
+    printf "%s\n" "-> jq: ${color_green}PASS${color_normal}"
     printf "%s\n" ""
     sleep 1
   else
-    printf "%s\n" " -> Docker: ${color_red}FAIL${color_normal}"
+    printf "%s\n" "-> jq: ${color_red}FAIL${color_normal}"
     printf "%s\n" ""
     sleep 1
   fi
@@ -75,5 +106,5 @@ copy_fonts() {
 }
 
 
-install_docker
+install_dependencies
 copy_fonts
