@@ -66,6 +66,7 @@ build:
 			-t do-not-push/$(GIT_USER_USERNAME)/dev-env-img:v$$IMAGE_VERSION . ; \
 	else \
 		DOCKER_BUILDKIT=1 docker build \
+			--no-cache \
 			--build-arg USER=$$USER \
 			--build-arg GROUP=$(GROUP) \
 			--build-arg UID=$(UID) \
