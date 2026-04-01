@@ -1,7 +1,6 @@
 make=3.77
 openssh-client=0
 ca-certificates=0
-curl=0
 gnupg=0 
 lsb-release=0
 fontconfig=0
@@ -14,4 +13,3 @@ docker-buildx-plugin=0
 docker-compose-plugin=0
 kubectl=1.33
 minikube=1.36
-nginx=0
