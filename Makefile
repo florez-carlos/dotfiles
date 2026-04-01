@@ -1,10 +1,9 @@
-export IMAGE_VERSION := 2.5.0
+export IMAGE_VERSION := 3.0.0
 export MODULE_HOME := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 SCRIPTS_DIR := $(MODULE_HOME)/scripts
 export DOT_HOME_CONFIG := $(MODULE_HOME)/config
 INSTALL_HOST_DEPENDENCIES := $(SCRIPTS_DIR)/install-host-dependencies.sh
 INSTALL_MAC_HOST_DEPENDENCIES := $(SCRIPTS_DIR)/install-mac-host-dependencies.sh
-ENABLE_UFW := $(SCRIPTS_DIR)/enable-ufw.sh
 SYSTEM := $(shell uname -s)
 CONTAINER_HOME := /home/$$USER
 
@@ -62,7 +61,6 @@ build:
 			--build-arg GIT_USER_NAME \
 			--build-arg GIT_USER_USERNAME \
 			--build-arg GIT_USER_EMAIL \
-			--build-arg GIT_USER_SIGNINGKEY \
 			--build-arg SYSTEM=$(SYSTEM) \
 			--secret id=PASSWORD,src=$$HOME/delete-me.txt \
 			-t do-not-push/$(GIT_USER_USERNAME)/dev-env-img:v$$IMAGE_VERSION . ; \
@@ -79,7 +77,6 @@ build:
 			--build-arg GIT_USER_NAME \
 			--build-arg GIT_USER_USERNAME \
 			--build-arg GIT_USER_EMAIL \
-			--build-arg GIT_USER_SIGNINGKEY \
 			--build-arg SYSTEM=$(SYSTEM) \
 			--secret id=PASSWORD,src=$$HOME/delete-me.txt \
 			-t do-not-push/$(GIT_USER_USERNAME)/dev-env-img:v$$IMAGE_VERSION . ; \
@@ -126,7 +123,12 @@ run:
 
 
 update-host:
-	@$(INSTALL_HOST_DEPENDENCIES)
+	
+	@if [ "$(SYSTEM)" = "Darwin" ]; then \
+		$(INSTALL_MAC_HOST_DEPENDENCIES); \
+	else \
+		$(INSTALL_HOST_DEPENDENCIES); \
+	fi
 
 hook:
 	docker exec -it dev-env-cont /usr/bin/zsh
