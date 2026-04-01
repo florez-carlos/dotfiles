@@ -11,7 +11,6 @@ ARG ASTRONVIM_VERSION
 ARG GIT_USER_NAME
 ARG GIT_USER_USERNAME
 ARG GIT_USER_EMAIL
-ARG GIT_USER_SIGNINGKEY
 ARG HOST_INPUT_GID
 ARG SYSTEM
 
@@ -25,7 +24,6 @@ ENV ASTRONVIM_VERSION=$ASTRONVIM_VERSION
 ENV GIT_USER_NAME=${GIT_USER_NAME}
 ENV GIT_USER_USERNAME=$GIT_USER_USERNAME
 ENV GIT_USER_EMAIL=$GIT_USER_EMAIL
-ENV GIT_USER_SIGNINGKEY=$GIT_USER_SIGNINGKEY
 ENV SYSTEM=$SYSTEM
 ENV KEEP_ZSHRC=yes
 ENV HOME=/home/${USER}
@@ -51,7 +49,6 @@ RUN --mount=type=secret,id=PASSWORD \
  && useradd -rm -s /bin/bash -g ${GID} -G sudo -u ${UID} ${USER} -p "$(openssl passwd -1 ${password})"
 
 #Add the input group (wayland only)
-#Correct ssh agent socket permissions (mac only)
 RUN <<-EOF
   if [ "${SYSTEM}" != "Darwin" ]; then
     IMAGE_INPUT_NAME=$(getent group $HOST_INPUT_GID | cut -d: -f1)
@@ -106,7 +103,7 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_VERSION}/install
 RUN . $XDG_CONFIG_HOME/nvm/nvm.sh && nvm install node
 RUN . $XDG_CONFIG_HOME/nvm/nvm.sh && npm install -g neovim pyright typescript typescript-language-server
 
-# Lunarvim
+# AstroNvim
 RUN git clone https://github.com/AstroNvim/template ~/.config/nvim
 RUN cd ~/.config/nvim && git reset --hard ${ASTRONVIM_VERSION} && rm -rf $HOME/.config/nvim/.git
 RUN nvim --headless +'' +qa
