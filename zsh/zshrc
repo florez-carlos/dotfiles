@@ -1,3 +1,11 @@
+if [ -e "/run/host-services/ssh-auth.sock" ]; then
+
+  printf "%s\n" ""
+  printf "%s\n" "══════════ MacOS detected, sudo needed to enable SSH agent ══════════"
+  printf "%s\n" ""
+  sudo chown $(id -u):$(id -g) /run/host-services/ssh-auth.sock
+  
+fi
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
