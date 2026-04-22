@@ -21,5 +21,6 @@ alias start='cd $HOME/workspace/dotfiles && make start'
 alias hook='cd $HOME/workspace/dotfiles && make hook'
 alias trash='cd $HOME/workspace/dotfiles && make trash'
 alias reload='cd $HOME/workspace/dotfiles && make trash && sleep 5 && make start'
+alias update='cd $HOME/workspace/dotfiles && make update'
 EOT
 . $RC_FILE
