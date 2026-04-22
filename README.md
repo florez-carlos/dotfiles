@@ -11,7 +11,6 @@ A containerized development environment with essential tools and packages
   * [Install required dependencies on the host machine](#install-required-dependencies-on-the-host-machine)
   * [Config Git](#config-git)
   * [Build the Image](#build-the-image)
-  * [Manually set font in terminal preferences](#manually-set-font-in-terminal-preferences)
 * [Using Dotfiles](#using-dotfiles)
 * [Configure a Remote SSH Client (optional)](#configure-a-remote-ssh-client-optional)
 
@@ -19,10 +18,10 @@ A containerized development environment with essential tools and packages
 
 > [!NOTE]
 > Installation is supported for the following:
-> - Ubuntu LTS (amd64)
+> - Ubuntu LTS (amd64/arm64)
 >   - X11
 >   - Wayland
-> - MacOS (amd64/rosetta)
+> - MacOS (arm64)
 
 ## Install basic dependencies
   
@@ -30,8 +29,8 @@ These dependencies are required to clone the repo and invoke the Makefile target
 
 ### Ubuntu
 ```bash
-sudo apt-get update -y && sudo apt-get upgrade -y
-sudo apt-get install git make curl -y
+sudo apt update -y && sudo apt upgrade -y
+sudo apt install git make curl -y
 ```
 
 ### MacOS
@@ -96,7 +95,6 @@ sudo pkill -u $USER
 make install
 ```
 
-
 ## Config Git
 
 This will append to .bashrc/.zshrc your Git name, username, email <br>
@@ -142,11 +140,17 @@ To only trash the container and not start a new one:
 trash
 ```
 
-To update the host machine dependencies:<br />
-> [!NOTE]
-> Important to run this frequently in order to keep the host machine dependencies up-to-date
+To update Dotfiles:<br />
+
+### Ubuntu
 ```bash
-sudo make update-host
+sudo make update -e USER=$USER -e HOME=$HOME
+```
+
+### MacOS
+
+```bash
+make update
 ```
 
 ---
@@ -172,4 +176,4 @@ Download the following fonts and install on your machine:
 > Follow your client instructions to add an SSH key 
 
 # License
-[MIT](https://choosealicense.com/licenses/mit/)
+[GNU GPLv3](https://github.com/florez-carlos/dotfiles/blob/main/LICENSE)

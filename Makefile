@@ -1,4 +1,4 @@
-export IMAGE_VERSION := 3.0.1
+export IMAGE_VERSION := 3.1.0
 export MODULE_HOME := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 SCRIPTS_DIR := $(MODULE_HOME)/scripts
 export DOT_HOME_CONFIG := $(MODULE_HOME)/config
@@ -18,17 +18,11 @@ export GPG_TTY := $(shell tty)
 # export LOCALTIME := America/New_York
 export LOCALTIME := UTC
 
-export NVM_VERSION := v0.40.3
-#This is by commit hash
-export ASTRONVIM_VERSION := ae96a25a77864a82d7e363ea4ca1fcfcfa20da94
+export NVM_VERSION := v0.40.4
+#This is by commit hash (https://github.com/AstroNvim/template)
+export ASTRONVIM_VERSION := 49a7161b776f8bc6c23508819ea1ad4e7b359bee
 # -- BUILD ARGS END --
 
-# -- RUN ARGS BEGIN --
-#Uncomment the desired python version, then build
-# !This is only respected by venv on a python repo!
-# export PYTHON_VERSION := 3.11
-export PYTHON_VERSION := 3.12
-# -- RUN ARGS END --
 
 PASSWORD ?= $(shell bash -c 'read -r -s -p "Enter the Unix password to use inside the container: " pwd; echo $$pwd')
 
@@ -41,7 +35,6 @@ install:
 	else \
 		$(INSTALL_HOST_DEPENDENCIES); \
 		adduser $(USER) docker; \
-		systemctl start nginx; \
 	fi
 
 # BUILDKIT instruction is required to use the secret flag
@@ -49,8 +42,8 @@ build:
 	@echo $(PASSWORD) > $$HOME/delete-me.txt
 	@if [ "$(SYSTEM)" = "Darwin" ]; then \
 		DOCKER_BUILDKIT=1 docker build \
+			--platform linux/arm64 \
 			--no-cache \
-			--platform linux/amd64 \
 			--build-arg USER=$$USER \
 			--build-arg GROUP=$(GROUP) \
 			--build-arg UID=$(UID) \
@@ -66,6 +59,7 @@ build:
 			-t do-not-push/$(GIT_USER_USERNAME)/dev-env-img:v$$IMAGE_VERSION . ; \
 	else \
 		DOCKER_BUILDKIT=1 docker build \
+			--platform linux/amd64 \
 			--no-cache \
 			--build-arg USER=$$USER \
 			--build-arg GROUP=$(GROUP) \
@@ -96,7 +90,6 @@ run:
 			-v $$HOME/.gnupg:$(CONTAINER_HOME)/.gnupg \
 			-v $$HOME/.ssh:$(CONTAINER_HOME)/.ssh \
 			-e SSH_AUTH_SOCK=/run/host-services/ssh-auth.sock \
-			-e PYTHON_VERSION=$$PYTHON_VERSION \
 			-e DISPLAY=$$DISPLAY \
 			-e WAYLAND_DISPLAY=$$WAYLAND_DISPLAY \
 			do-not-push/$(GIT_USER_USERNAME)/dev-env-img:v$$IMAGE_VERSION ; \
@@ -116,20 +109,23 @@ run:
 			-e XDG_RUNTIME_DIR=$$XDG_RUNTIME_DIR \
 			-e XDG_SESSION_TYPE=$$XDG_SESSION_TYPE \
 			-e SSH_AUTH_SOCK=$$SSH_AUTH_SOCK \
-			-e PYTHON_VERSION=$$PYTHON_VERSION \
 			-e DISPLAY=$$DISPLAY \
 			-e WAYLAND_DISPLAY=$$WAYLAND_DISPLAY \
 			do-not-push/$(GIT_USER_USERNAME)/dev-env-img:v$$IMAGE_VERSION ; \
 	fi
 
 
-update-host:
-	
+update:
+	@git diff-index --quiet HEAD -- || (echo "Error: uncommitted local changes; restore before updating; aborting"; exit 1)
+	@docker container stop dev-env-cont 2>/dev/null || true
+	@docker rmi do-not-push/$(GIT_USER_USERNAME)/dev-env-img:v$(IMAGE_VERSION) 2>/dev/null || true
+	@git pull
 	@if [ "$(SYSTEM)" = "Darwin" ]; then \
 		$(INSTALL_MAC_HOST_DEPENDENCIES); \
 	else \
 		$(INSTALL_HOST_DEPENDENCIES); \
 	fi
+	@$(MAKE) build
 
 hook:
 	docker exec -it dev-env-cont /usr/bin/zsh

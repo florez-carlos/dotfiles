@@ -9,13 +9,6 @@ color_normal=$(tput sgr0)
 install_dependencies() {
 
   printf "%s\n" ""
-  printf "%s\n" " -> Beginning Rosetta Install: "
-  printf "%s\n" ""
-  sleep 1
-
-  /usr/sbin/softwareupdate --install-rosetta --agree-to-license
-
-  printf "%s\n" ""
   printf "%s\n" " -> Beginning Docker Install: "
   printf "%s\n" ""
   sleep 1
@@ -38,18 +31,6 @@ install_dependencies() {
   printf "%s\n" " -> Beginning dependencies check: "
   printf "%s\n" ""
   sleep 1
-
-  if [[ "$(uname -m)" == "arm64" ]] && [[ "$(uname -s)" == "Darwin" ]]; then
-    if arch -x86_64 /usr/bin/true 2>/dev/null; then
-      printf "%s\n" ""
-      printf "%s\n" "-> Rosetta: ${color_green}PASS${color_normal}"
-      sleep 1
-    else
-      printf "%s\n" ""
-      printf "%s\n" "-> Rosetta: ${color_red}FAIL${color_normal}"
-      sleep 1
-    fi
-  fi
 
   if command -v docker >/dev/null 2>&1; then
     printf "%s\n" "-> Docker: ${color_green}PASS${color_normal}"
@@ -101,7 +82,6 @@ copy_fonts() {
   printf "%s\n" "⚠️  ${color_yellow}Pending:${color_normal} manually run Docker Desktop from Applications"
   printf "%s\n" ""
   sleep 1
-
 
 }
 
