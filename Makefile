@@ -118,7 +118,7 @@ run:
 update:
 	@git diff-index --quiet HEAD -- || (echo "Error: uncommitted local changes; restore before updating; aborting"; exit 1)
 	@docker container stop dev-env-cont 2>/dev/null || true
-	@docker rmi do-not-push/$(GIT_USER_USERNAME)/dev-env-img:v$(IMAGE_VERSION) 2>/dev/null || true
+	@docker rmi $$(docker images -q do-not-push/$(GIT_USER_USERNAME)/dev-env-img) 2>/dev/null || true
 	@git pull
 	@if [ "$(SYSTEM)" = "Darwin" ]; then \
 		$(INSTALL_MAC_HOST_DEPENDENCIES); \
