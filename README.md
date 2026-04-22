@@ -118,29 +118,29 @@ Set the font to 'MesloLGS' is terminal preferences and restart the terminal.
 
 # Using Dotfiles
 
-To start the container:
+## Start the Container
 ```bash
 start
 ```
 
-To reenter a running container:
+## Reenter a Running Container
 ```bash
 hook
 ```
 
-To trash the current instance of the container and start a new one:<br />
+## Remove the container
+```bash
+trash
+```
+
+## Remove the container and start a new one<br />
 > [!NOTE]
 > :warning: **Remember, only contents inside the ~/workspace dir will be persisted across shutdowns**
 ```bash
 reload
 ```
 
-To only trash the container and not start a new one:
-```bash
-trash
-```
-
-To update Dotfiles:<br />
+## Update Dotfiles
 
 ### Ubuntu
 ```bash
