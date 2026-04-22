@@ -82,7 +82,7 @@ Run the install target. <br>
 > This will install the dependencies listed on [host dependencies file](config/host-dependencies.txt) 
 
 ```bash
-sudo make install -e USER=$USER -e HOME=$HOME
+make install
 ```
 Log out and log back in for group changes to take effect </br>
 ```bash
@@ -141,13 +141,6 @@ reload
 ```
 
 ## Update Dotfiles
-
-### Ubuntu
-```bash
-sudo make update -e USER=$USER -e HOME=$HOME
-```
-
-### MacOS
 
 ```bash
 make update
