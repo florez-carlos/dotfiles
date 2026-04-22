@@ -106,7 +106,7 @@ cd $HOME/workspace/dotfiles/scripts/ && ./inject-env.sh
 ## Build the image
 
 ```bash
-cd $HOME/workspace/dotfiles || exit 1
+cd $HOME/workspace/dotfiles
 make build
 ```
 
