@@ -82,7 +82,7 @@ build:
 run:
 	@if [ "$(SYSTEM)" = "Darwin" ]; then \
 		docker run -it --rm -d \
-			--platform linux/amd64 \
+			--platform linux/arm64 \
 			--net=host \
 			--name dev-env-cont \
 			-v /run/host-services/ssh-auth.sock:/run/host-services/ssh-auth.sock \
@@ -91,12 +91,12 @@ run:
 			-v $$HOME/.ssh:$(CONTAINER_HOME)/.ssh \
 			-e SSH_AUTH_SOCK=/run/host-services/ssh-auth.sock \
 			-e DISPLAY=$$DISPLAY \
-			-e WAYLAND_DISPLAY=$$WAYLAND_DISPLAY \
 			do-not-push/$(GIT_USER_USERNAME)/dev-env-img:v$$IMAGE_VERSION ; \
 	else \
 		xhost +local:docker; \
 		xhost +SI:localuser:$$(id -un); \
 		docker run -it --rm -d \
+			--platform linux/amd64 \
 			--net=host \
 			--name dev-env-cont \
 			--device=/dev/input:/dev/input \
