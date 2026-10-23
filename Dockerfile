@@ -1,5 +1,5 @@
 FROM ghcr.io/florez-carlos/dev-env-ubuntu-base-img:latest
-LABEL org.opencontainers.image.authors="carlos@florez.co.uk"
+LABEL org.opencontainers.image.authors="mail@florezcarlos.com"
 
 ARG USER
 ARG GROUP
@@ -7,7 +7,6 @@ ARG UID
 ARG GID
 ARG LOCALTIME
 ARG NVM_VERSION
-ARG ASTRONVIM_VERSION
 ARG GIT_USER_NAME
 ARG GIT_USER_USERNAME
 ARG GIT_USER_EMAIL
@@ -20,7 +19,6 @@ ENV UID=$UID
 ENV GID=$GID
 ENV LOCALTIME=$LOCALTIME
 ENV NVM_VERSION=$NVM_VERSION
-ENV ASTRONVIM_VERSION=$ASTRONVIM_VERSION
 ENV GIT_USER_NAME=${GIT_USER_NAME}
 ENV GIT_USER_USERNAME=$GIT_USER_USERNAME
 ENV GIT_USER_EMAIL=$GIT_USER_EMAIL
@@ -104,8 +102,8 @@ RUN . $XDG_CONFIG_HOME/nvm/nvm.sh && nvm install node
 RUN . $XDG_CONFIG_HOME/nvm/nvm.sh && npm install -g neovim pyright typescript typescript-language-server
 
 # AstroNvim
-RUN git clone https://github.com/AstroNvim/template ~/.config/nvim
-RUN cd ~/.config/nvim && git reset --hard ${ASTRONVIM_VERSION} && rm -rf $HOME/.config/nvim/.git
+RUN git clone --depth 1 https://github.com/AstroNvim/template ~/.config/nvim
+RUN rm -rf ~/.config/nvim/.git
 RUN nvim --headless +'' +qa
 
 RUN ln -s $DOT_HOME_VIM/ftplugin $XDG_CONFIG_HOME/nvim/ftplugin

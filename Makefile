@@ -1,4 +1,4 @@
-export IMAGE_VERSION := 3.1.0
+export IMAGE_VERSION := 3.2.0
 export MODULE_HOME := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 SCRIPTS_DIR := $(MODULE_HOME)/scripts
 export DOT_HOME_CONFIG := $(MODULE_HOME)/config
@@ -18,9 +18,8 @@ export GPG_TTY := $(shell tty)
 # export LOCALTIME := America/New_York
 export LOCALTIME := UTC
 
-export NVM_VERSION := v0.40.4
+export NVM_VERSION := v0.40.8
 #This is by commit hash (https://github.com/AstroNvim/template)
-export ASTRONVIM_VERSION := 49a7161b776f8bc6c23508819ea1ad4e7b359bee
 # -- BUILD ARGS END --
 
 
@@ -49,7 +48,6 @@ build:
 			--build-arg UID=$(UID) \
 			--build-arg GID=$(GID) \
 			--build-arg NVM_VERSION=$(NVM_VERSION) \
-			--build-arg ASTRONVIM_VERSION=$(ASTRONVIM_VERSION) \
 			--build-arg LOCALTIME=$(LOCALTIME) \
 			--build-arg GIT_USER_NAME \
 			--build-arg GIT_USER_USERNAME \
@@ -67,7 +65,6 @@ build:
 			--build-arg GID=$(GID) \
 			--build-arg HOST_INPUT_GID=$$(getent group input | cut -d: -f3) \
 			--build-arg NVM_VERSION=$(NVM_VERSION) \
-			--build-arg ASTRONVIM_VERSION=$(ASTRONVIM_VERSION) \
 			--build-arg LOCALTIME=$(LOCALTIME) \
 			--build-arg GIT_USER_NAME \
 			--build-arg GIT_USER_USERNAME \
