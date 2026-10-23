@@ -104,7 +104,7 @@ RUN . $XDG_CONFIG_HOME/nvm/nvm.sh && npm install -g neovim pyright typescript ty
 # AstroNvim
 RUN git clone --depth 1 https://github.com/AstroNvim/template ~/.config/nvim
 RUN rm -rf ~/.config/nvim/.git
-RUN nvim --headless +'' +qa
+RUN nvim --headless "+Lazy! sync" "+sleep 15" "+qa"
 
 RUN ln -s $DOT_HOME_VIM/ftplugin $XDG_CONFIG_HOME/nvim/ftplugin
 
