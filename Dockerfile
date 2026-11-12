@@ -31,8 +31,6 @@ ENV DOT_HOME=/usr/local/src/dotfiles
 ENV DOT_HOME_SCRIPTS=$DOT_HOME/scripts
 ENV DOT_HOME_ZSH=$DOT_HOME/zsh
 ENV DOT_HOME_LIB=$DOT_HOME/lib
-ENV DOT_HOME_VIM=$DOT_HOME/vim
-ENV M2_HOME=$HOME/.m2
 ENV WORKSPACE=$HOME/workspace
 ENV HOST_INPUT_GID=$HOST_INPUT_GID
 
@@ -67,13 +65,12 @@ RUN rm /etc/localtime && ln -s /usr/share/zoneinfo/$LOCALTIME /etc/localtime
 
 # $XDG_CONFIG_HOME/nvim
 # $XDG_DATA_HOME/nvim/site/pack/plugins
-RUN mkdir -p {$XDG_DATA_HOME,$XDG_CONFIG_HOME,$DOT_HOME_ZSH,$XDG_DATA_HOME/jdtls-data,$XDG_CONFIG_HOME/git,$M2_HOME,$WORKSPACE}
+RUN mkdir -p {$XDG_DATA_HOME,$XDG_CONFIG_HOME,$DOT_HOME_ZSH,$XDG_CONFIG_HOME/git,$WORKSPACE}
 
 ADD ./zsh $DOT_HOME_ZSH
-ADD ./vim $DOT_HOME_VIM
 ADD ./scripts $DOT_HOME_SCRIPTS
 
-RUN chown -R ${USER}:${GID} $HOME $DOT_HOME $XDG_DATA_HOME/jdtls-data
+RUN chown -R ${USER}:${GID} $HOME $DOT_HOME
 RUN chsh ${USER} -s $(which zsh)
 
 RUN chmod +x -R $DOT_HOME_SCRIPTS
@@ -106,8 +103,6 @@ RUN git clone --depth 1 https://github.com/AstroNvim/template ~/.config/nvim
 RUN rm -rf ~/.config/nvim/.git
 RUN nvim --headless +'' +qa
 
-RUN ln -s $DOT_HOME_VIM/ftplugin $XDG_CONFIG_HOME/nvim/ftplugin
-
 # Enable pyright plugin
 RUN echo -e '\
 vim.lsp.enable("pyright")\
@@ -117,16 +112,6 @@ vim.lsp.enable("pyright")\
 RUN echo -e '\
 vim.g.python3_host_prog = "/usr/local/bin/python" .. os.getenv("PYTHON_DEFAULT")\
 ' >> $XDG_CONFIG_HOME/nvim/init.lua
-
-# Enable nvim-jdtls plugin
-RUN cat > $XDG_CONFIG_HOME/nvim/lua/plugins/nvim-jdtls.lua << 'EOF'
-return {
-  {
-    "mfussenegger/nvim-jdtls",
-    name = "nvim-jdtls",
-  },
-}
-EOF
 
 # Enable render-markdown plugin
 RUN cat > $XDG_CONFIG_HOME/nvim/lua/plugins/render-markdown.lua << 'EOF'
