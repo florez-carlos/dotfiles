@@ -123,7 +123,7 @@ RUN rm -rf "$HOME/.cache/tree-sitter/lock" && \
 nvim --headless \
   "+Lazy! sync" \
   "+lua require('lazy').load({plugins={'mini.icons','render-markdown.nvim','nvim-treesitter'}})" \
-  "+lua require('nvim-treesitter').install({'bash','c','lua','make','markdown','dockerfile','gitcommit','git_config','git_rebase','markdown_inline','python','query','toml','vim','vimdoc'}):wait(300000)" \
+  "+lua require('nvim-treesitter').install({'bash','c','lua','make','markdown','dockerfile','gitcommit','git_config','git_rebase','markdown_inline','python','query','toml','vim','vimdoc','yaml'}):wait(300000)" \
   +qa 2>&1 | tee /tmp/ts.log
 
 # Enable pyright plugin
