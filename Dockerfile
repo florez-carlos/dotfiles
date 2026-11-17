@@ -101,17 +101,20 @@ RUN . $XDG_CONFIG_HOME/nvm/nvm.sh && npm install -g neovim pyright typescript ty
 # AstroNvim
 RUN git clone --depth 1 https://github.com/AstroNvim/template ~/.config/nvim
 RUN rm -rf ~/.config/nvim/.git
-RUN nvim --headless +'' +qa
+RUN nvim --headless "+Lazy! sync" +qa
+RUN rm -rf "$HOME/.cache/tree-sitter/lock" && \
+nvim --headless \
+  "+Lazy! sync" \
+  "+lua require('lazy').load({plugins={'mini.nvim','render-markdown.nvim','nvim-treesitter'}})" \
+  "+lua require('nvim-treesitter').install({'bash','c','lua','markdown','dockerfile','gitcommit','git_config','git_rebase','markdown_inline','python','query','vim','vimdoc'}):wait(300000)" \
+  +qa 2>&1 | tee /tmp/ts.log
 
 # Enable pyright plugin
-RUN echo -e '\
-vim.lsp.enable("pyright")\
-' >> $XDG_CONFIG_HOME/nvim/init.lua
+RUN printf '\nvim.lsp.enable("pyright")\n' >> "$XDG_CONFIG_HOME/nvim/init.lua"
 
 # Set python provider version
-RUN echo -e '\
-vim.g.python3_host_prog = "/usr/local/bin/python" .. os.getenv("PYTHON_DEFAULT")\
-' >> $XDG_CONFIG_HOME/nvim/init.lua
+RUN printf '\nvim.g.python3_host_prog = "/usr/local/bin/python" .. os.getenv("PYTHON_DEFAULT")\n' \
+    >> "$XDG_CONFIG_HOME/nvim/init.lua"
 
 # Enable render-markdown plugin
 RUN cat > $XDG_CONFIG_HOME/nvim/lua/plugins/render-markdown.lua << 'EOF'
