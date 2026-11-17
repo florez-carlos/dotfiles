@@ -101,11 +101,28 @@ RUN . $XDG_CONFIG_HOME/nvm/nvm.sh && npm install -g neovim pyright typescript ty
 # AstroNvim
 RUN git clone --depth 1 https://github.com/AstroNvim/template ~/.config/nvim
 RUN rm -rf ~/.config/nvim/.git
+
+# Enable render-markdown plugin
+RUN cat > "$XDG_CONFIG_HOME/nvim/lua/plugins/render-markdown.lua" << 'EOF'
+return {
+  {
+    'MeanderingProgrammer/render-markdown.nvim',
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter',
+      'nvim-mini/mini.icons',
+    },
+    ---@module 'render-markdown'
+    ---@type render.md.UserConfig
+    opts = {},
+  },
+}
+EOF
+
 RUN nvim --headless "+Lazy! sync" +qa
 RUN rm -rf "$HOME/.cache/tree-sitter/lock" && \
 nvim --headless \
   "+Lazy! sync" \
-  "+lua require('lazy').load({plugins={'mini.nvim','render-markdown.nvim','nvim-treesitter'}})" \
+  "+lua require('lazy').load({plugins={'mini.icons','render-markdown.nvim','nvim-treesitter'}})" \
   "+lua require('nvim-treesitter').install({'bash','c','lua','make','markdown','dockerfile','gitcommit','git_config','git_rebase','markdown_inline','python','query','toml','vim','vimdoc'}):wait(300000)" \
   +qa 2>&1 | tee /tmp/ts.log
 
@@ -115,21 +132,6 @@ RUN printf '\nvim.lsp.enable("pyright")\n' >> "$XDG_CONFIG_HOME/nvim/init.lua"
 # Set python provider version
 RUN printf '\nvim.g.python3_host_prog = "/usr/local/bin/python" .. os.getenv("PYTHON_DEFAULT")\n' \
     >> "$XDG_CONFIG_HOME/nvim/init.lua"
-
-# Enable render-markdown plugin
-RUN cat > $XDG_CONFIG_HOME/nvim/lua/plugins/render-markdown.lua << 'EOF'
-return {
-  {
-    'MeanderingProgrammer/render-markdown.nvim',
-    dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.nvim' },            -- if you use the mini.nvim suite
-    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.icons' },        -- if you use standalone mini plugins
-    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
-    ---@module 'render-markdown'
-    ---@type render.md.UserConfig
-    opts = {},
-  },
-}
-EOF
 
 WORKDIR ${WORKSPACE}
 ENTRYPOINT ["tail", "-f", "/dev/null"]
